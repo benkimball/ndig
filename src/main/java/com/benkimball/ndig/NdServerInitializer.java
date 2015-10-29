@@ -17,7 +17,6 @@ public class NdServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
         pipeline.addLast(new StringDecoder());
         pipeline.addLast(new StringEncoder());
-        pipeline.addLast(new IdleStateHandler(0, 0, 1));
         pipeline.addLast(new NdServerHandler());
     }
 }

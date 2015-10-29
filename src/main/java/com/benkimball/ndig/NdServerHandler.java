@@ -10,56 +10,33 @@ import io.netty.handler.timeout.IdleStateEvent;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.channels.Channel;
 import java.util.ArrayList;
 
-@Sharable
 public class NdServerHandler extends SimpleChannelInboundHandler<String> {
 
     private NdPlayer player;
 
     private static final String CRLF = "\n";
     private static final String PROMPT = "> ";
-    private static final String line(String s) {
-        return(s + CRLF);
-    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress addr = (InetSocketAddress) ctx.channel().remoteAddress();
         player = new NdPlayer(addr);
-        ctx.write("\033[2J");
-        ctx.write(line("Welcome to ndig."));
-        ctx.write(CRLF);
-        ctx.write(line("Your name is " + player.getName()));
-        ctx.write(line("Use `/name <newname>` to register."));
-        ctx.write(CRLF);
+        ctx.write("Connected to ndig" + CRLF);
+        ctx.write("Your name is " + player.getName() + CRLF);
         ctx.write(PROMPT);
         ctx.flush();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String in) throws Exception {
-        String out;
-        boolean close = false;
-
-        if (in.isEmpty()) {
-            out = line("Sorry, I didn't get that.");
-        } else if ("exit".equalsIgnoreCase(in) || "quit".equalsIgnoreCase(in)) {
-            out = "Bye!" + CRLF + CRLF;
-            close = true;
+        if(in.isEmpty()) { return; }
+        if ("exit".equalsIgnoreCase(in) || "quit".equalsIgnoreCase(in)) {
+            ctx.writeAndFlush("Bye!" + CRLF + CRLF).addListener(ChannelFutureListener.CLOSE);
         } else {
-            out = line("I heard you say, '" + in + "'.");
-        }
-        ChannelFuture future = ctx.write(out + PROMPT);
-        if(close) {
-            future.addListener(ChannelFutureListener.CLOSE);
-        }
-
-    }
-
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if(evt instanceof IdleStateEvent) {
-            ctx.writeAndFlush("\033[s\r\033[Kspam"+CRLF+PROMPT+"\033[u");
+            ctx.writeAndFlush("I heard you say, '" + in + "'." + CRLF);
         }
     }
 

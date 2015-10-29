@@ -8,7 +8,7 @@ public class NdPlayer {
 
     public NdPlayer(InetSocketAddress addr) {
         this.addr = addr;
-        this.name = "_unregistered" + addr.getPort();
+        this.name = "guest" + addr.getPort();
     }
 
     public String getName() {
