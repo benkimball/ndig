@@ -1,26 +1,14 @@
-when user connects assign lowest available line number from 1 to LIMIT
-player has connected_at and last_seen_at for "on" and "idle" times
-Admin gets #0
+case msg
+when /^:(.+)/ then NdEmoteCommand($1)
+when /^\.p(\d+) ?(.+) then NdWhisperCommand($1, $2)
+when /^\.y ?(.+)/ then NdYellCommand($1)
 
-COMMANDS
-:emote to room
-.p# private message to line #
-.y yell to server
-.y :emote to server
-.h hush yells
-.i# ignore all messages from #
-.n name[=password]
-.w# who is on line #
-.w who is on server
-.q quit
-.? help
-anything still unmatched speaks to room
-
-Displays as:
-
-(1, Zubin) hello
-(*1, Zubin*) HELLO!
-(1p, Zubin) psst hey
+if msg =~ /^:(.+)/
+  return NdEmoteCommand($1)
+elsif msg.starts_with?(.)
+  
+else
+  return NdSayCommand(msg)
 
 NdCommand(Player player, Game game, String msg)
   NdHushCommand

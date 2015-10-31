@@ -1,5 +1,6 @@
 package com.benkimball.ndig;
 
+import com.benkimball.ndig.command.NdCommand;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -13,21 +14,16 @@ import java.net.SocketAddress;
 import java.nio.channels.Channel;
 import java.util.ArrayList;
 
-public class NdServerHandler extends SimpleChannelInboundHandler<String> {
+public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
-    private final NdNumberPool lines;
     private NdPlayer player;
 
     private static final String CRLF = "\n";
     private static final String PROMPT = "> ";
 
-    public NdServerHandler(NdNumberPool lines) {
-        this.lines = lines;
-    }
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Number line_number = lines.acquire();
+        Number line_number = NdServer.lines.acquire();
         if(line_number == null) {
             ctx.writeAndFlush("Sorry, server is full." + CRLF + CRLF).addListener(ChannelFutureListener.CLOSE);
         } else {
@@ -42,14 +38,8 @@ public class NdServerHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String in) throws Exception {
-        if(in.isEmpty()) { return; }
-        if ("exit".equalsIgnoreCase(in) || "quit".equalsIgnoreCase(in)) {
-            lines.release(player.getLineNumber());
-            ctx.writeAndFlush("Bye!" + CRLF + CRLF).addListener(ChannelFutureListener.CLOSE);
-        } else {
-            ctx.writeAndFlush("I heard you say, '" + in + "'." + CRLF);
-        }
+    protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
+        in.invoke(ctx, player);
     }
 
     @Override

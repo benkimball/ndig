@@ -7,7 +7,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public final class NdServer {
+public class NdServer {
     private static final int PORT = 9916;
     public static final NdNumberPool lines = new NdNumberPool(60);
 
@@ -19,7 +19,7 @@ public final class NdServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new NdServerInitializer(lines));
+                    .childHandler(new NdServerInitializer());
             b.bind(PORT).sync().channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
