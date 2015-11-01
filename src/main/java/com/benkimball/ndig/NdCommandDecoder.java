@@ -10,7 +10,8 @@ import java.util.regex.*;
 
 public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
-    private final Pattern EMOTE   = Pattern.compile("^:(.*)");
+    private final Pattern SAY     = Pattern.compile("^['\"](.+)$");
+    private final Pattern EMOTE   = Pattern.compile("^:(.+)$");
     private final Pattern QUIT    = Pattern.compile("^\\.q$");
     private final Pattern HUSH    = Pattern.compile("^\\.h$");
     private final Pattern IGNORE  = Pattern.compile("^\\.i ?(\\d+)$");
@@ -20,10 +21,14 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private final Pattern NAME    = Pattern.compile("^\\.n (.*)$");
     private final Pattern PM      = Pattern.compile("^\\.p ?(\\d+) (.*)$");
     private final Pattern HELP    = Pattern.compile("^\\.\\?$");
+    private final Pattern NULL    = Pattern.compile("^[:'\"].*$");
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
         Matcher m;
+
+        m = SAY.matcher(msg);
+        if(m.matches()) { out.add(new NdSayCommand(m)); return; }
 
         m = EMOTE.matcher(msg);
         if(m.matches()) { out.add(new NdEmoteCommand(m)); return; }
@@ -55,6 +60,10 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         m = HELP.matcher(msg);
         if(m.matches()) { out.add(new NdHelpCommand(m)); return; }
 
-        out.add(new NdSayCommand(msg));
+        m = NULL.matcher(msg);
+        if(m.matches()) { return; }
+
+        // if all else fails, it's unknown
+        out.add(new NdUnknownCommand(msg));
     }
 }

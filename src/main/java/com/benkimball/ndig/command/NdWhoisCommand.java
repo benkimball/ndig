@@ -1,6 +1,8 @@
 package com.benkimball.ndig.command;
 
+import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
+import io.netty.channel.ChannelFuture;
 
 import java.util.regex.Matcher;
 
@@ -9,7 +11,7 @@ public class NdWhoisCommand implements NdCommand {
     }
 
     @Override
-    public void invoke(Object gameContext, NdPlayer player) {
-        // player.tell game.getPlayerByLine(line).info
+    public ChannelFuture invoke(NdGame game, NdPlayer player) {
+        return player.tell("Whois is unimplemented.");
     }
 }

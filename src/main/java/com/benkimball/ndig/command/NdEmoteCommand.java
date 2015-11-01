@@ -1,18 +1,20 @@
 package com.benkimball.ndig.command;
 
+import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
+import io.netty.channel.ChannelFuture;
 
 import java.util.regex.Matcher;
 
 public class NdEmoteCommand implements NdCommand {
-    private final String message;
+    private final String text;
 
     public NdEmoteCommand(Matcher matcher) {
-        message = matcher.group(1);
+        text = matcher.group(1);
     }
 
     @Override
-    public void invoke(Object gameContext, NdPlayer player) {
-        /* player.location.peeps.ignore(player).tell(message) */
+    public ChannelFuture invoke(NdGame game, NdPlayer player) {
+        return player.tell(player.getName() + " " + text);
     }
 }

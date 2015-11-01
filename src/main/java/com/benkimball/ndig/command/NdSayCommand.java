@@ -1,20 +1,20 @@
 package com.benkimball.ndig.command;
 
+import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelFuture;
 
 import java.util.regex.Matcher;
 
 public class NdSayCommand implements NdCommand {
     private final String text;
 
-    public NdSayCommand(String msg) {
-        text = msg;
+    public NdSayCommand(Matcher m) {
+        text = m.group(1);
     }
 
     @Override
-    public void invoke(Object gameContext, NdPlayer player) {
-        ChannelHandlerContext ctx = (ChannelHandlerContext)gameContext;
-        ctx.writeAndFlush(text);
+    public ChannelFuture invoke(NdGame game, NdPlayer player) {
+        return player.tell(text);
     }
 }

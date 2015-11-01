@@ -16,30 +16,30 @@ import java.util.ArrayList;
 
 public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
+    private NdGame game = NdServer.game;
     private NdPlayer player;
 
     private static final String CRLF = "\n";
-    private static final String PROMPT = "> ";
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Number line_number = NdServer.lines.acquire();
-        if(line_number == null) {
+        player = game.createPlayer(ctx);
+        if(player == null) {
             ctx.writeAndFlush("Sorry, server is full." + CRLF + CRLF).addListener(ChannelFutureListener.CLOSE);
         } else {
-            InetSocketAddress addr = (InetSocketAddress) ctx.channel().remoteAddress();
-            player = new NdPlayer(addr, line_number);
             ctx.write("Connected to ndig" + CRLF);
             ctx.write("Your name is " + player.getName() + CRLF);
-            ctx.write("You have line " + player.getLineNumber() + CRLF);
-            ctx.write(PROMPT);
+            ctx.write("You have line " + player.getLineNumber() + CRLF + CRLF);
             ctx.flush();
         }
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
-        in.invoke(ctx, player);
+        ChannelFuture complete = in.invoke(game, player);
+        if(player.isQuitting()) {
+            complete.addListener(ChannelFutureListener.CLOSE);
+        }
     }
 
     @Override

@@ -4,15 +4,15 @@ import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
 import io.netty.channel.ChannelFuture;
 
-import java.util.regex.Matcher;
+public class NdUnknownCommand implements NdCommand {
+    private final String text;
 
-public class NdQuitCommand implements NdCommand {
-    public NdQuitCommand(Matcher matcher) {
+    public NdUnknownCommand(String msg) {
+        this.text = msg;
     }
 
     @Override
     public ChannelFuture invoke(NdGame game, NdPlayer player) {
-        player.setQuitting(true);
-        return player.tell("Bye!");
+        return player.tell("Unknown command '"+text+"'");
     }
 }
