@@ -12,6 +12,7 @@ public class NdQuitCommand implements NdCommand {
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
         player.tell("Bye!");
+        player.getLocation().out(player);
         return true;
     }
 }

@@ -10,9 +10,11 @@ import java.net.InetSocketAddress;
 
 public class NdGame {
     private NdNumberPool lines;
+    private NdNode home;
 
     public NdGame(int max_connections) {
         lines = new NdNumberPool(max_connections);
+        home = new NdNode("Home", "This comfortable room contains many rugs and pillows.");
     }
 
     private final ChannelGroup allChannels =
@@ -23,12 +25,17 @@ public class NdGame {
         Number line_number = lines.acquire();
         if(line_number != null) {
             player = new NdPlayer(ctx, line_number);
+            home.in(player);
             allChannels.add(ctx.channel());
         }
         return player;
     }
 
     public void handleLogout(NdPlayer player) {
+        NdNode location = player.getLocation();
+        if(location != null) {
+            location.out(player);
+        }
         Number line_number = player.getLineNumber();
         lines.release(line_number);
         player = null; // TODO is this necessary?
