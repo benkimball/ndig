@@ -35,9 +35,14 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        game.handleLogout(player);
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
         ChannelFuture complete = in.invoke(game, player);
-        if(player.isQuitting()) {
+        if(complete != null && player.isQuitting()) {
             complete.addListener(ChannelFutureListener.CLOSE);
         }
     }

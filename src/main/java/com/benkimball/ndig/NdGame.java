@@ -15,7 +15,7 @@ public class NdGame {
         lines = new NdNumberPool(max_connections);
     }
 
-    private final ChannelGroup allChannels =
+    public final ChannelGroup allChannels =
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public NdPlayer createPlayer(ChannelHandlerContext ctx) {
@@ -26,5 +26,11 @@ public class NdGame {
             allChannels.add(ctx.channel());
         }
         return player;
+    }
+
+    public void handleLogout(NdPlayer player) {
+        Number line_number = player.getLineNumber();
+        lines.release(line_number);
+        player = null; // TODO is this necessary?
     }
 }

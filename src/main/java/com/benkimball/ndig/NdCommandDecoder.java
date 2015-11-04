@@ -1,5 +1,6 @@
 package com.benkimball.ndig;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 
@@ -8,24 +9,30 @@ import com.benkimball.ndig.command.*;
 import java.util.List;
 import java.util.regex.*;
 
+@Sharable
 public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
-    private final Pattern SAY     = Pattern.compile("^['\"](.+)$");
-    private final Pattern EMOTE   = Pattern.compile("^:(.+)$");
-    private final Pattern QUIT    = Pattern.compile("^\\.q$");
-    private final Pattern HUSH    = Pattern.compile("^\\.h$");
-    private final Pattern IGNORE  = Pattern.compile("^\\.i ?(\\d+)$");
-    private final Pattern WHO     = Pattern.compile("^\\.w$");
-    private final Pattern WHOIS   = Pattern.compile("^\\.w ?(\\d+)$");
-    private final Pattern YELL    = Pattern.compile("^\\.y (.*)$");
-    private final Pattern NAME    = Pattern.compile("^\\.n (.*)$");
-    private final Pattern PM      = Pattern.compile("^\\.p ?(\\d+) (.*)$");
-    private final Pattern HELP    = Pattern.compile("^\\.\\?$");
-    private final Pattern NULL    = Pattern.compile("^[:'\"].*$");
+    private static final Pattern SAY     = Pattern.compile("^['\"](.+)$");
+    private static final Pattern EMOTE   = Pattern.compile("^:(.+)$");
+    private static final Pattern QUIT    = Pattern.compile("^\\.q$");
+    private static final Pattern HUSH    = Pattern.compile("^\\.h$");
+    private static final Pattern IGNORE  = Pattern.compile("^\\.i ?(\\d+)$");
+    private static final Pattern WHO     = Pattern.compile("^\\.w$");
+    private static final Pattern WHOIS   = Pattern.compile("^\\.w ?(\\d+)$");
+    private static final Pattern YELL    = Pattern.compile("^\\.y (.*)$");
+    private static final Pattern NAME    = Pattern.compile("^\\.n (.*)$");
+    private static final Pattern PM      = Pattern.compile("^\\.p ?(\\d+) (.*)$");
+    private static final Pattern HELP    = Pattern.compile("^\\.\\?$");
+    private static final Pattern NULL    = Pattern.compile("^[:'\"].*$");
+
+    private static final Pattern BROADCAST = Pattern.compile("^@b(.+)$");
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
         Matcher m;
+
+        m = BROADCAST.matcher(msg);
+        if(m.matches()) { out.add(new NdBroadcastCommand(m)); return; }
 
         m = SAY.matcher(msg);
         if(m.matches()) { out.add(new NdSayCommand(m)); return; }
