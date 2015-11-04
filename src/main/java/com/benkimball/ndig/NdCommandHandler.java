@@ -41,10 +41,8 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
-        ChannelFuture complete = in.invoke(game, player);
-        if(complete != null && player.isQuitting()) {
-            complete.addListener(ChannelFutureListener.CLOSE);
-        }
+        boolean quitting = in.invoke(game, player);
+        if(quitting) ctx.close();
     }
 
     @Override

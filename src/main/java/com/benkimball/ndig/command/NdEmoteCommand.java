@@ -2,7 +2,6 @@ package com.benkimball.ndig.command;
 
 import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
-import io.netty.channel.ChannelFuture;
 
 import java.util.regex.Matcher;
 
@@ -14,7 +13,9 @@ public class NdEmoteCommand implements NdCommand {
     }
 
     @Override
-    public ChannelFuture invoke(NdGame game, NdPlayer player) {
-        return player.tell(player.getName() + " " + text);
+    public boolean invoke(NdGame game, NdPlayer player) {
+        String message = String.format("(%d) %s %s\n", player.getLineNumber(), player.getName(), text);
+        game.broadcast(message);
+        return false;
     }
 }

@@ -2,7 +2,6 @@ package com.benkimball.ndig.command;
 
 import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
-import io.netty.channel.ChannelFuture;
 
 import java.util.regex.Matcher;
 
@@ -14,8 +13,8 @@ public class NdBroadcastCommand implements NdCommand {
     }
 
     @Override
-    public ChannelFuture invoke(NdGame game, NdPlayer player) {
-        game.allChannels.writeAndFlush("\n*** SERVER MESSAGE: " + text + " ***\n");
-        return null;
+    public boolean invoke(NdGame game, NdPlayer player) {
+        game.broadcast("\n*** SERVER MESSAGE: " + text + " ***\n");
+        return false;
     }
 }
