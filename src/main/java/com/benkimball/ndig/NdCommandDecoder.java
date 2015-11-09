@@ -5,10 +5,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 
 import com.benkimball.ndig.command.*;
+import net.jcip.annotations.Immutable;
 
 import java.util.List;
 import java.util.regex.*;
 
+@Immutable
 @Sharable
 public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
@@ -41,10 +43,10 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         if(m.matches()) { out.add(new NdEmoteCommand(m)); return; }
 
         m = QUIT.matcher(msg);
-        if(m.matches()) { out.add(new NdQuitCommand(m)); return; }
+        if(m.matches()) { out.add(new NdQuitCommand()); return; }
 
         m = HUSH.matcher(msg);
-        if(m.matches()) { out.add(new NdHushCommand(m)); return; }
+        if(m.matches()) { out.add(new NdHushCommand()); return; }
 
         m = IGNORE.matcher(msg);
         if(m.matches()) { out.add(new NdIgnoreCommand(m)); return; }
@@ -65,7 +67,7 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         if(m.matches()) { out.add(new NdPrivateMessageCommand(m)); return; }
 
         m = HELP.matcher(msg);
-        if(m.matches()) { out.add(new NdHelpCommand(m)); return; }
+        if(m.matches()) { out.add(new NdHelpCommand()); return; }
 
         m = NULL.matcher(msg);
         if(m.matches()) { return; }

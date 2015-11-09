@@ -1,30 +1,29 @@
 package com.benkimball.ndig;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import net.jcip.annotations.NotThreadSafe;
 
-import java.net.InetSocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
 
+@NotThreadSafe // or is it?
 public class NdGame {
-    private NdNumberPool lines;
-    private NdNode home;
-
-    public NdGame(int max_connections) {
-        lines = new NdNumberPool(max_connections);
-        home = new NdNode("Home", "This comfortable room contains many rugs and pillows.");
-    }
+    public final NdRoster roster;
+    private final NdNode home;
 
     private final ChannelGroup allChannels =
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
+    public NdGame(int max_connections) {
+        roster = new NdRoster(max_connections);
+        home = new NdNode("Home", "This comfortable room contains many rugs and pillows.");
+    }
+
     public NdPlayer createPlayer(ChannelHandlerContext ctx) {
-        NdPlayer player = null;
-        Number line_number = lines.acquire();
-        if(line_number != null) {
-            player = new NdPlayer(ctx, line_number);
+        NdPlayer player = roster.createPlayer(ctx);
+        if(player != null) {
             home.in(player);
             allChannels.add(ctx.channel());
         }
@@ -36,9 +35,7 @@ public class NdGame {
         if(location != null) {
             location.out(player);
         }
-        Number line_number = player.getLineNumber();
-        lines.release(line_number);
-        player = null; // TODO is this necessary?
+        roster.removePlayer(player);
     }
 
     public void broadcast(String message) {

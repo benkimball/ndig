@@ -16,20 +16,18 @@ import java.util.ArrayList;
 
 public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
-    private NdGame game = NdServer.game;
+    private final NdGame game = NdServer.game;
     private NdPlayer player;
-
-    private static final String CRLF = "\n";
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         player = game.createPlayer(ctx);
         if(player == null) {
-            ctx.writeAndFlush("Sorry, server is full." + CRLF + CRLF).addListener(ChannelFutureListener.CLOSE);
+            ctx.writeAndFlush("Sorry, server is full.\n\n").addListener(ChannelFutureListener.CLOSE);
         } else {
-            ctx.write("Connected to ndig" + CRLF);
-            ctx.write("Your name is " + player.getName() + CRLF);
-            ctx.write("You have line " + player.getLineNumber() + CRLF + CRLF);
+            ctx.write("Connected to ndig\n");
+            ctx.write("Your name is " + player.getName() + "\n");
+            ctx.write("You have line " + player.getLineNumber() + "\n\n");
             ctx.flush();
         }
     }

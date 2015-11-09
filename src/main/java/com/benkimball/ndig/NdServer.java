@@ -13,8 +13,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 public class NdServer {
     private static final int PORT = 9916;
-    public static final NdGame game = new NdGame(60);
-    public static final ChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static final NdGame game = new NdGame(60); // safely published by static initializer
 
     public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
