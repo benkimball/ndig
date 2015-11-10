@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import net.jcip.annotations.GuardedBy;
 
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,8 @@ import java.util.Set;
 public class NdPlayer {
     private final ChannelHandlerContext ctx;
     private final Integer line_number;
+    private final Instant on_since;
+    private Instant last_seen;
     @GuardedBy("this") private String name;
     @GuardedBy("this") private NdNode location;
     private final Set<NdPlayer> ignores = Collections.synchronizedSet(new HashSet<>());
@@ -21,6 +25,19 @@ public class NdPlayer {
         this.line_number = line_number;
         this.name = defaultName();
         this.location = null;
+        on_since = Instant.now();
+        last_seen = Instant.from(on_since);
+    }
+
+    public void seen() {
+        last_seen = Instant.now();
+    }
+
+    public String whois() {
+        Duration idle = Duration.between(last_seen, Instant.now());
+        Duration on = Duration.between(on_since, Instant.now());
+        return String.format("(%d) %s, idle %s, on for %s\n", getLineNumber(), getName(),
+                DurationFormatter.format(idle), DurationFormatter.format(on));
     }
 
     public synchronized String getName() {

@@ -31,6 +31,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
+        player.seen();
         boolean quitting = in.invoke(game, player);
         if(quitting) ctx.close();
     }

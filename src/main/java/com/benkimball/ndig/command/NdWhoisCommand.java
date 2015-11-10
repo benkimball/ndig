@@ -8,12 +8,16 @@ import java.util.regex.Matcher;
 
 @Immutable
 public class NdWhoisCommand implements NdCommand {
+    private final int line_number;
+
     public NdWhoisCommand(Matcher matcher) {
+        line_number = Integer.parseInt(matcher.group(1));
     }
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        player.tell("Whois is unimplemented.");
+        NdPlayer subject = game.roster.getPlayer(line_number);
+        player.tell("> " + subject.whois());
         return false;
     }
 }
