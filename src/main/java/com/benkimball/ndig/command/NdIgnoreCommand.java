@@ -17,8 +17,12 @@ public class NdIgnoreCommand implements NdCommand {
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
         NdPlayer brat = game.roster.getPlayer(line_number);
-        player.ignore(brat);
-        player.tell(String.format("Ignoring (%d) %s", line_number, player.getName()));
+        boolean ignoring = player.toggleIgnore(brat);
+        if(ignoring) {
+            player.tell(String.format("Ignoring (%d) %s", line_number, player.getName()));
+        } else {
+            player.tell(String.format("No longer ignoring (%d) %s", line_number, player.getName()));
+        }
         return false;
     }
 }

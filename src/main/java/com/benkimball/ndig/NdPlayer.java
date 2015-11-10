@@ -37,14 +37,6 @@ public class NdPlayer {
         return ctx.writeAndFlush(text + "\n");
     }
 
-    public void ignore(NdPlayer brat) {
-        ignores.add(brat);
-    }
-
-    public void unignore(NdPlayer buddy) {
-        ignores.remove(buddy);
-    }
-
     public boolean isIgnoring(NdPlayer speaker) {
         return ignores.contains(speaker);
     }
@@ -60,5 +52,17 @@ public class NdPlayer {
     private String defaultName() {
         InetSocketAddress addy = (InetSocketAddress)ctx.channel().remoteAddress();
         return "guest" + addy.getPort();
+    }
+
+    public boolean toggleIgnore(NdPlayer other) {
+        synchronized(ignores) {
+            if(ignores.contains(other)) {
+                ignores.remove(other);
+                return false;
+            } else {
+                ignores.add(other);
+                return true;
+            }
+        }
     }
 }
