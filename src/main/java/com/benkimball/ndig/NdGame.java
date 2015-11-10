@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @NotThreadSafe // or is it?
 public class NdGame {
     public final NdRoster roster;
-    private final NdNode home;
+    public final NdNode home;
 
     private final ChannelGroup allChannels =
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -24,7 +24,6 @@ public class NdGame {
     public NdPlayer createPlayer(ChannelHandlerContext ctx) {
         NdPlayer player = roster.createPlayer(ctx);
         if(player != null) {
-            home.in(player);
             allChannels.add(ctx.channel());
         }
         return player;

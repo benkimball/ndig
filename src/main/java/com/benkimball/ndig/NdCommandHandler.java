@@ -28,6 +28,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
             ctx.write("Connected to ndig\n");
             ctx.write("Your name is " + player.getName() + "\n");
             ctx.write("You have line " + player.getLineNumber() + "\n\n");
+            game.home.in(player);
             ctx.flush();
         }
     }

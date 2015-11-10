@@ -7,10 +7,10 @@ import net.jcip.annotations.Immutable;
 import java.util.regex.Matcher;
 
 @Immutable
-public class NdIgnoreCommand implements NdCommand {
+public class NdGagCommand implements NdCommand {
     private final int line_number;
 
-    public NdIgnoreCommand(Matcher matcher) {
+    public NdGagCommand(Matcher matcher) {
         line_number = Integer.parseInt(matcher.group(1));
     }
 
@@ -19,9 +19,9 @@ public class NdIgnoreCommand implements NdCommand {
         NdPlayer brat = game.roster.getPlayer(line_number);
         boolean ignoring = player.toggleIgnore(brat);
         if(ignoring) {
-            player.tell(String.format("Ignoring (%d) %s", line_number, player.getName()));
+            player.tell(String.format("Ignoring (%d) %s", line_number, brat.getName()));
         } else {
-            player.tell(String.format("No longer ignoring (%d) %s", line_number, player.getName()));
+            player.tell(String.format("No longer ignoring (%d) %s", line_number, brat.getName()));
         }
         return false;
     }

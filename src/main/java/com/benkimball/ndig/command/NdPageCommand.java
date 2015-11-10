@@ -7,8 +7,8 @@ import net.jcip.annotations.Immutable;
 import java.util.regex.Matcher;
 
 @Immutable
-public class NdPrivateMessageCommand implements NdCommand {
-    public NdPrivateMessageCommand(Matcher matcher) {
+public class NdPageCommand implements NdCommand {
+    public NdPageCommand(Matcher matcher) {
     }
 
     @Override

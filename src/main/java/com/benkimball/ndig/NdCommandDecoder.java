@@ -18,12 +18,12 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern EMOTE   = Pattern.compile("^:(.+)$");
     private static final Pattern QUIT    = Pattern.compile("^\\.q$");
     private static final Pattern HUSH    = Pattern.compile("^\\.h$");
-    private static final Pattern IGNORE  = Pattern.compile("^\\.i ?(\\d+)$");
+    private static final Pattern GAG     = Pattern.compile("^\\.g ?(\\d+)$");
     private static final Pattern WHO     = Pattern.compile("^\\.w$");
     private static final Pattern WHOIS   = Pattern.compile("^\\.w ?(\\d+)$");
     private static final Pattern YELL    = Pattern.compile("^\\.y (.*)$");
     private static final Pattern NAME    = Pattern.compile("^\\.n (.*)$");
-    private static final Pattern PM      = Pattern.compile("^\\.p ?(\\d+) (.*)$");
+    private static final Pattern PAGE    = Pattern.compile("^\\.p ?(\\d+) (.*)$");
     private static final Pattern HELP    = Pattern.compile("^\\.\\?$");
     private static final Pattern NULL    = Pattern.compile("^[:'\"].*$");
 
@@ -48,8 +48,8 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         m = HUSH.matcher(msg);
         if(m.matches()) { out.add(new NdHushCommand()); return; }
 
-        m = IGNORE.matcher(msg);
-        if(m.matches()) { out.add(new NdIgnoreCommand(m)); return; }
+        m = GAG.matcher(msg);
+        if(m.matches()) { out.add(new NdGagCommand(m)); return; }
 
         m = WHO.matcher(msg);
         if(m.matches()) { out.add(new NdWhoCommand(m)); return; }
@@ -63,8 +63,8 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         m = NAME.matcher(msg);
         if(m.matches()) { out.add(new NdNameCommand(m)); return; }
 
-        m = PM.matcher(msg);
-        if(m.matches()) { out.add(new NdPrivateMessageCommand(m)); return; }
+        m = PAGE.matcher(msg);
+        if(m.matches()) { out.add(new NdPageCommand(m)); return; }
 
         m = HELP.matcher(msg);
         if(m.matches()) { out.add(new NdHelpCommand()); return; }
