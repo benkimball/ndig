@@ -37,8 +37,9 @@ public class NdPlayer {
         return ctx.writeAndFlush(text + "\n");
     }
 
-    public boolean isIgnoring(NdPlayer speaker) {
-        return ignores.contains(speaker);
+    public ChannelFuture tell(String message, NdPlayer from) {
+        if(!ignores.contains(from)) return tell(message);
+        return null;
     }
 
     public synchronized void setLocation(NdNode location) {
@@ -47,11 +48,6 @@ public class NdPlayer {
 
     public synchronized NdNode getLocation() {
         return location;
-    }
-
-    private String defaultName() {
-        InetSocketAddress addy = (InetSocketAddress)ctx.channel().remoteAddress();
-        return "guest" + addy.getPort();
     }
 
     public boolean toggleIgnore(NdPlayer other) {
@@ -64,5 +60,10 @@ public class NdPlayer {
                 return true;
             }
         }
+    }
+
+    private String defaultName() {
+        InetSocketAddress address = (InetSocketAddress)ctx.channel().remoteAddress();
+        return "guest" + address.getPort();
     }
 }

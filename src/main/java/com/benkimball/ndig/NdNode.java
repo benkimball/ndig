@@ -49,18 +49,16 @@ public class NdNode {
     }
 
     public synchronized void tell(String message, NdPlayer from) {
-        occupants.stream().forEach(p -> {
-            if(!p.isIgnoring(from)) p.tell(message);
-        });
+        occupants.stream().forEach(p -> p.tell(message, from));
     }
 
     private void announceEntrance(NdPlayer player) {
-        String message = String.format("(%d) %s has entered.", player.getLineNumber(), player.getName());
+        String message = String.format("(%d) %s has entered the room.", player.getLineNumber(), player.getName());
         occupants.stream().forEach(p -> p.tell(message));
     }
 
     private void announceDeparture(NdPlayer player) {
-        String message = String.format("(%d) %s has left.", player.getLineNumber(), player.getName());
+        String message = String.format("(%d) %s has left the room.", player.getLineNumber(), player.getName());
         occupants.stream().forEach(p -> p.tell(message));
     }
 }

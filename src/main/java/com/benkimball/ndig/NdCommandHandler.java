@@ -1,18 +1,9 @@
 package com.benkimball.ndig;
 
 import com.benkimball.ndig.command.NdCommand;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.Delimiters;
-import io.netty.handler.timeout.IdleStateEvent;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.channels.Channel;
-import java.util.ArrayList;
 
 public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
@@ -21,7 +12,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        player = game.createPlayer(ctx);
+        player = game.handleLogin(ctx);
         if(player == null) {
             ctx.writeAndFlush("Sorry, server is full.\n\n").addListener(ChannelFutureListener.CLOSE);
         } else {

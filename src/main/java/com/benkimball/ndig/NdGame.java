@@ -21,20 +21,23 @@ public class NdGame {
         home = new NdNode("Home", "This comfortable room contains many rugs and pillows.");
     }
 
-    public NdPlayer createPlayer(ChannelHandlerContext ctx) {
+    public NdPlayer handleLogin(ChannelHandlerContext ctx) {
         NdPlayer player = roster.createPlayer(ctx);
         if(player != null) {
+            broadcast(String.format("> New arrival on line %d.\n", player.getLineNumber()));
             allChannels.add(ctx.channel());
         }
         return player;
     }
 
     public void handleLogout(NdPlayer player) {
+        String message = String.format("> Line %d (%s) has departed.\n", player.getLineNumber(), player.getName());
         NdNode location = player.getLocation();
         if(location != null) {
             location.out(player);
         }
         roster.removePlayer(player);
+        broadcast(message);
     }
 
     public void broadcast(String message) {
