@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 public class NdBroadcastCommand implements NdCommand {
     private final String text;
 
-    public NdBroadcastCommand(Matcher matcher) {
-        text = matcher.group(1);
+    public NdBroadcastCommand(String text) {
+        this.text = text;
     }
 
     @Override

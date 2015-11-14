@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 public class NdEmoteCommand implements NdCommand {
     private final String text;
 
-    public NdEmoteCommand(Matcher matcher) {
-        text = matcher.group(1);
+    public NdEmoteCommand(String text) {
+        this.text = text;
     }
 
     @Override

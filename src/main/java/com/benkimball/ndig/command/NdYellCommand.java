@@ -8,7 +8,10 @@ import java.util.regex.Matcher;
 
 @Immutable
 public class NdYellCommand implements NdCommand {
-    public NdYellCommand(Matcher matcher) {
+    private final String text;
+
+    public NdYellCommand(String text) {
+        this.text = text;
     }
 
     @Override

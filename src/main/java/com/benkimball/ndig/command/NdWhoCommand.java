@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 
 @Immutable
 public class NdWhoCommand implements NdCommand {
-    public NdWhoCommand(Matcher matcher) {
+    public NdWhoCommand() {
     }
 
     @Override

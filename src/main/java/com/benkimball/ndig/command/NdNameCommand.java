@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 public class NdNameCommand implements NdCommand {
     private final String name;
 
-    public NdNameCommand(Matcher m) {
-        name = m.group(1);
+    public NdNameCommand(String name) {
+        this.name = name;
     }
 
     @Override

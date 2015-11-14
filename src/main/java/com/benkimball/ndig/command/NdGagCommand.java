@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 public class NdGagCommand implements NdCommand {
     private final int line_number;
 
-    public NdGagCommand(Matcher matcher) {
-        line_number = Integer.parseInt(matcher.group(1));
+    public NdGagCommand(int line_number) {
+        this.line_number = line_number;
     }
 
     @Override

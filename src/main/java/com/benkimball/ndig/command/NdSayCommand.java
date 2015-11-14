@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 public class NdSayCommand implements NdCommand {
     private final String text;
 
-    public NdSayCommand(Matcher m) {
-        text = m.group(1);
+    public NdSayCommand(String text) {
+        this.text = text;
     }
 
     @Override

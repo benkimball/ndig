@@ -8,7 +8,12 @@ import java.util.regex.Matcher;
 
 @Immutable
 public class NdPageCommand implements NdCommand {
-    public NdPageCommand(Matcher matcher) {
+    private final int line_number;
+    private final String text;
+
+    public NdPageCommand(int line_number, String text) {
+        this.line_number = line_number;
+        this.text = text;
     }
 
     @Override
