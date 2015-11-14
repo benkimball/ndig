@@ -27,7 +27,7 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern HELP    = Pattern.compile("^\\.(\\?|he(l|lp)?)$");
     private static final Pattern NULL    = Pattern.compile("^[:'\"].*$");
 
-    private static final Pattern BROADCAST = Pattern.compile("^@b(?<text>.+)$");
+    private static final Pattern BROADCAST = Pattern.compile("^@b(r|ro|roa|road|roadc|roadca|roadcas|roadcast)? ?(?<text>.+)$");
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {

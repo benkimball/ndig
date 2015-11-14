@@ -38,11 +38,6 @@ public class NdPlayer {
         last_seen = Instant.now();
     }
 
-    public String whois() {
-        return String.format("(%d) %s, idle %s, on for %s\n", getLineNumber(), getName(),
-                getIdleDuration(), getLoginDuration());
-    }
-
     public String getIdleDuration() {
         return NdDurationFormatter.format(Duration.between(last_seen, Instant.now()));
     }

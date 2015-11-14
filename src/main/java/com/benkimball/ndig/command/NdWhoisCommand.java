@@ -17,7 +17,10 @@ public class NdWhoisCommand implements NdCommand {
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
         NdPlayer subject = game.roster.getPlayer(line_number);
-        player.tell("> " + subject.whois());
+        String whois = String.format("> (%d) %s, idle %s, on for %s from %s",
+                subject.getLineNumber(), subject.getName(), subject.getIdleDuration(),
+                subject.getLoginDuration(), subject.getFrom());
+        player.tell(whois);
         return false;
     }
 }
