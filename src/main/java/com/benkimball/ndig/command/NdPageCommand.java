@@ -18,7 +18,8 @@ public class NdPageCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        player.tell("Private message is unimplemented.");
+        NdPlayer subject = game.roster.getPlayer(line_number);
+        subject.tell(String.format("(%d,p %s) %s", player.getLineNumber(), player.getName(), text), player);
         return false;
     }
 }

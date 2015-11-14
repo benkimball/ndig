@@ -19,12 +19,15 @@ public class NdPlayer {
     @GuardedBy("this") private String name;
     @GuardedBy("this") private NdNode location;
     private final Set<NdPlayer> ignores = Collections.synchronizedSet(new HashSet<>());
+    private final String from;
     private boolean hushed;
 
     public NdPlayer(ChannelHandlerContext ctx, Integer line_number) {
         this.ctx = ctx;
+        InetSocketAddress address = (InetSocketAddress)ctx.channel().remoteAddress();
+        this.from = address.getHostName();
+        this.name = "guest" + address.getPort();
         this.line_number = line_number;
-        this.name = defaultName();
         this.location = null;
         this.on_since = Instant.now();
         this.last_seen = Instant.from(on_since);
@@ -36,10 +39,16 @@ public class NdPlayer {
     }
 
     public String whois() {
-        Duration idle = Duration.between(last_seen, Instant.now());
-        Duration on = Duration.between(on_since, Instant.now());
         return String.format("(%d) %s, idle %s, on for %s\n", getLineNumber(), getName(),
-                DurationFormatter.format(idle), DurationFormatter.format(on));
+                getIdleDuration(), getLoginDuration());
+    }
+
+    public String getIdleDuration() {
+        return NdDurationFormatter.format(Duration.between(last_seen, Instant.now()));
+    }
+
+    public String getLoginDuration() {
+        return NdDurationFormatter.format(Duration.between(on_since, Instant.now()));
     }
 
     public synchronized String getName() {
@@ -48,6 +57,10 @@ public class NdPlayer {
 
     public synchronized void setName(String new_name) {
         name = new_name;
+    }
+
+    public String getFrom() {
+        return from;
     }
 
     public Integer getLineNumber() { return line_number; }
@@ -93,10 +106,5 @@ public class NdPlayer {
 
     public boolean isHushed() {
         return hushed;
-    }
-
-    private String defaultName() {
-        InetSocketAddress address = (InetSocketAddress)ctx.channel().remoteAddress();
-        return "guest" + address.getPort();
     }
 }
