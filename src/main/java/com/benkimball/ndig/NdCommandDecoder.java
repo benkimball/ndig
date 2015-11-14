@@ -14,7 +14,6 @@ import java.util.regex.*;
 @Sharable
 public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
-    private static final Pattern SAY     = Pattern.compile("^['\"](?<text>.+)$");
     private static final Pattern EMOTE   = Pattern.compile("^:(?<text>.+)$");
     private static final Pattern QUIT    = Pattern.compile("^\\.q(u|ui|uit)?$");
     private static final Pattern HUSH    = Pattern.compile("^\\.h(u|us|ush)?$");
@@ -25,7 +24,7 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern NAME    = Pattern.compile("^\\.n(a|am|ame)? (?<text>.*)$");
     private static final Pattern PAGE    = Pattern.compile("^\\.p(a|ag|age)? ?(?<linenumber>\\d+) (?<text>.*)$");
     private static final Pattern HELP    = Pattern.compile("^\\.(\\?|he(l|lp)?)$");
-    private static final Pattern NULL    = Pattern.compile("^[:'\"].*$");
+    private static final Pattern NULL    = Pattern.compile("^[:\\.]$");
 
     private static final Pattern BROADCAST = Pattern.compile("^@b(r|ro|roa|road|roadc|roadca|roadcas|roadcast)? (?<text>.+)$");
 
@@ -35,9 +34,6 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
         m = BROADCAST.matcher(msg);
         if(m.matches()) { out.add(new NdBroadcastCommand(m.group("text"))); return; }
-
-        m = SAY.matcher(msg);
-        if(m.matches()) { out.add(new NdSayCommand(m.group("text"))); return; }
 
         m = EMOTE.matcher(msg);
         if(m.matches()) { out.add(new NdEmoteCommand(m.group("text"))); return; }
@@ -75,7 +71,7 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         m = NULL.matcher(msg);
         if(m.matches()) { return; }
 
-        // if all else fails, it's unknown
-        out.add(new NdUnknownCommand(msg));
+        // if all else fails, it's a say
+        out.add(new NdSayCommand(msg));
     }
 }
