@@ -45,4 +45,13 @@ public class NdRoster {
             }
         }
     }
+
+    public boolean requestName(NdPlayer player, String name) {
+        synchronized (lock) {
+            if(lines.values().stream().noneMatch(p -> p.getName().equals(name))) {
+                player.setName(name);
+                return true;
+            } else return false;
+        }
+    }
 }

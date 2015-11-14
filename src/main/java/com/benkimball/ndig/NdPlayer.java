@@ -44,9 +44,9 @@ public class NdPlayer {
         return name;
     }
 
-//    public synchronized void setName(String new_name) {
-//        name = new_name;
-//    }
+    public synchronized void setName(String new_name) {
+        name = new_name;
+    }
 
     public Integer getLineNumber() { return line_number; }
 

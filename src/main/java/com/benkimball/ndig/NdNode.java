@@ -10,7 +10,7 @@ public class NdNode {
     @GuardedBy("this") private String name;
     @GuardedBy("this") private String description;
     @GuardedBy("this") private final CopyOnWriteArraySet<NdPlayer> occupants =
-            new CopyOnWriteArraySet<NdPlayer>();
+            new CopyOnWriteArraySet<>();
 
     public NdNode(String name, String description) {
         this.name = name;
