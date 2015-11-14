@@ -19,14 +19,16 @@ public class NdPlayer {
     @GuardedBy("this") private String name;
     @GuardedBy("this") private NdNode location;
     private final Set<NdPlayer> ignores = Collections.synchronizedSet(new HashSet<>());
+    private boolean hushed;
 
     public NdPlayer(ChannelHandlerContext ctx, Integer line_number) {
         this.ctx = ctx;
         this.line_number = line_number;
         this.name = defaultName();
         this.location = null;
-        on_since = Instant.now();
-        last_seen = Instant.from(on_since);
+        this.on_since = Instant.now();
+        this.last_seen = Instant.from(on_since);
+        this.hushed = false;
     }
 
     public void seen() {
@@ -59,6 +61,11 @@ public class NdPlayer {
         return null;
     }
 
+    public ChannelFuture yell(String message, NdPlayer from) {
+        if(!hushed) return tell(message, from);
+        return null;
+    }
+
     public synchronized void setLocation(NdNode location) {
         this.location = location;
     }
@@ -77,6 +84,15 @@ public class NdPlayer {
                 return true;
             }
         }
+    }
+
+    public boolean toggleHushed() {
+        hushed = !hushed;
+        return hushed;
+    }
+
+    public boolean isHushed() {
+        return hushed;
     }
 
     private String defaultName() {

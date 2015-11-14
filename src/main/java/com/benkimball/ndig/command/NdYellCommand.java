@@ -16,7 +16,12 @@ public class NdYellCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        player.tell("Yell is unimplemented.");
+        if(player.isHushed()) {
+            player.tell("> You may not yell while hushed.");
+        } else {
+            String yell = String.format("(*%d, %s*) %s", player.getLineNumber(), player.getName(), text);
+            game.roster.eachPlayer(p -> p.yell(yell, player));
+        }
         return false;
     }
 }

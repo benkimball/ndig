@@ -6,6 +6,8 @@ import net.jcip.annotations.ThreadSafe;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @ThreadSafe
 public class NdRoster {
@@ -52,6 +54,12 @@ public class NdRoster {
                 player.setName(name);
                 return true;
             } else return false;
+        }
+    }
+
+    public void eachPlayer(Consumer<NdPlayer> fn) {
+        synchronized (lock) {
+            lines.values().stream().forEach(fn);
         }
     }
 }

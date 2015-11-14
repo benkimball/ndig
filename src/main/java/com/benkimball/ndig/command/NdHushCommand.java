@@ -11,7 +11,11 @@ public class NdHushCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        player.tell("Hush is unimplemented.");
+        if(player.toggleHushed()) {
+            player.tell("> Yells suppressed.");
+        } else {
+            player.tell("> Yells no longer suppressed.");
+        }
         return false;
     }
 }
