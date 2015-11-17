@@ -16,7 +16,7 @@ public class NdBroadcastCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        game.broadcast("\n*** SERVER MESSAGE: " + text + " ***\n");
+        game.broadcast("\n*** ATTENTION: " + text + " ***\n");
         return false;
     }
 }

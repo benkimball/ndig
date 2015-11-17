@@ -1,6 +1,7 @@
 package com.benkimball.ndig;
 
 import com.benkimball.ndig.command.NdCommand;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -12,14 +13,17 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        NdNode starting_location = NdMap.home;
         player = game.handleLogin(ctx);
         if(player == null) {
             ctx.writeAndFlush("Sorry, server is full.\n\n").addListener(ChannelFutureListener.CLOSE);
+        } else if(starting_location == null) {
+            ctx.writeAndFlush("Sorry, this server has no rooms.\n\n").addListener(ChannelFutureListener.CLOSE);
         } else {
             ctx.write("Connected to ndig\n");
             ctx.write("Your name is " + player.getName() + "\n");
             ctx.write("You have line " + player.getLineNumber() + "\n\n");
-            game.home.in(player);
+            starting_location.in(player);
             ctx.flush();
         }
     }

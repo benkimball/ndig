@@ -4,34 +4,34 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
+import org.neo4j.graphdb.GraphDatabaseService;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-@NotThreadSafe // or is it?
+@ThreadSafe
 public class NdGame {
-    public final NdRoster roster;
-    public final NdNode home;
+
+    public final NdRoster roster; // is thread safe
+    public final NdMap map; // is thread safe
 
     private final ChannelGroup allChannels =
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public NdGame(int max_connections) {
-        roster = new NdRoster(max_connections);
-        home = new NdNode("Home", "This comfortable room contains many rugs and pillows.");
+        this.map = new NdMap();
+        this.roster = new NdRoster(max_connections);
     }
 
     public NdPlayer handleLogin(ChannelHandlerContext ctx) {
         NdPlayer player = roster.createPlayer(ctx);
         if(player != null) {
-            broadcast(String.format("> New arrival on line %d.\n", player.getLineNumber()));
+            broadcast(String.format("> New arrival on line %d.", player.getLineNumber()));
             allChannels.add(ctx.channel());
         }
         return player;
     }
 
     public void handleLogout(NdPlayer player) {
-        String message = String.format("> Line %d (%s) has departed.\n", player.getLineNumber(), player.getName());
+        String message = String.format("> Line %d (%s) has departed.", player.getLineNumber(), player.getName());
         NdNode location = player.getLocation();
         if(location != null) {
             location.out(player);
@@ -41,6 +41,6 @@ public class NdGame {
     }
 
     public void broadcast(String message) {
-        allChannels.writeAndFlush(message);
+        allChannels.writeAndFlush(message + "\n");
     }
 }
