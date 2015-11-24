@@ -18,15 +18,15 @@ public class NdNameCommand implements NdCommand {
     public boolean invoke(NdGame game, NdPlayer player) {
         String old_name = player.getName();
         if(old_name.equals(name)) {
-            player.tell("> You are already known as " + name + ".");
+            player.tell("You are already known as " + name + ".");
         } else {
             if(game.roster.requestName(player, name)) {
-                player.tell("> Name changed.");
-                String announcement = String.format("> (%d, %s) is now known as %s.",
+                player.tell("Name changed.");
+                String announcement = String.format("(%d, %s) is now known as %s.",
                         player.getLineNumber(), old_name, player.getName());
                 player.getLocation().tell(announcement, player);
             } else {
-                player.tell("> That name is already in use.");
+                player.tell("That name is already in use.");
             }
         }
         return false;

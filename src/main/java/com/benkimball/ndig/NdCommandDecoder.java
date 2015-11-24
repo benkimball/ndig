@@ -18,13 +18,15 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern QUIT    = Pattern.compile("^\\.q(u|ui|uit)?$");
     private static final Pattern HUSH    = Pattern.compile("^\\.h(u|us|ush)?$");
     private static final Pattern GAG     = Pattern.compile("^\\.g(a|ag)? ?(?<linenumber>\\d+)$");
+    private static final Pattern LOOK    = Pattern.compile("^\\.l(o|oo|ook)?$");
     private static final Pattern WHO     = Pattern.compile("^\\.w(h|ho)?$");
     private static final Pattern WHOIS   = Pattern.compile("^\\.w(h|ho|hoi|hois)? ?(?<linenumber>\\d+)$");
     private static final Pattern YELL    = Pattern.compile("^\\.y(e|el|ell)? (?<text>.*)$");
     private static final Pattern NAME    = Pattern.compile("^\\.n(a|am|ame)? (?<text>.*)$");
     private static final Pattern PAGE    = Pattern.compile("^\\.p(a|ag|age)? ?(?<linenumber>\\d+) (?<text>.*)$");
-    private static final Pattern HELP    = Pattern.compile("^\\.(\\?|he(l|lp)?)$");
-    private static final Pattern NULL    = Pattern.compile("^[:\\.]$");
+    private static final Pattern HELP    = Pattern.compile("^\\.he(l|lp)?$");
+    private static final Pattern SHORT   = Pattern.compile("^\\.\\?$");
+    private static final Pattern NULL    = Pattern.compile("^[:\\.]?$");
 
     private static final Pattern BROADCAST = Pattern.compile("^@b(r|ro|roa|road|roadc|roadca|roadcas|roadcast)? (?<text>.+)$");
 
@@ -47,6 +49,9 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         m = GAG.matcher(msg);
         if(m.matches()) { out.add(new NdGagCommand(Integer.parseInt(m.group("linenumber")))); return; }
 
+        m = LOOK.matcher(msg);
+        if(m.matches()) { out.add(new NdLookCommand()); return; }
+
         m = WHO.matcher(msg);
         if(m.matches()) { out.add(new NdWhoCommand()); return; }
 
@@ -67,6 +72,9 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
         m = HELP.matcher(msg);
         if(m.matches()) { out.add(new NdHelpCommand()); return; }
+
+        m = SHORT.matcher(msg);
+        if(m.matches()) { out.add(new NdShortHelpCommand()); return; }
 
         m = NULL.matcher(msg);
         if(m.matches()) { return; }

@@ -16,7 +16,7 @@ public class NdEmoteCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        String message = String.format("(%d) %s %s\n", player.getLineNumber(), player.getName(), text);
+        String message = String.format("(%d) %s %s", player.getLineNumber(), player.getName(), text);
         player.getLocation().tell(message, player);
         return false;
     }

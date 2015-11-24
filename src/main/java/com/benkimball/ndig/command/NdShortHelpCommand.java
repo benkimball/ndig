@@ -11,20 +11,20 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 
 @Immutable
-public class NdHelpCommand implements NdCommand {
+public class NdShortHelpCommand implements NdCommand {
 
     private static StringBuffer helpText = new StringBuffer();
 
     static {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    NdHelpCommand.class.getResourceAsStream("/help-verbose.txt")));
+                    NdHelpCommand.class.getResourceAsStream("/help-commands.txt")));
             String line;
             while((line = reader.readLine()) != null) {
                 helpText.append(line + "\n");
             }
         } catch(IOException ex) {
-            throw new RuntimeException("Unexpected exception reading verbose help text", ex);
+            throw new RuntimeException("Unexpected exception reading command help text", ex);
         }
     }
 

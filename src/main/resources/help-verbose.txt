@@ -1,0 +1,90 @@
+ndig help, version 1.0
+last updated 23 November 2015
+
+1) Where am I?
+
+You've connected to _ndig_, a chat server loosely based on the old Haven
+software originally written by Chris Eleveld (aka The Insane Hermit) at Purdue
+University in 1991. As of this writing, a good summary of havens can be found at
+http://www.rootaction.net/~jillian/haven/haven/text/havenfaq.txt.
+
+2) What can I do?
+
+You can chat with other online users.
+
+3) Okay, how do I chat?
+
+It's pretty simple. By default, any text you type will be sent to every user who
+is in the same room as you as soon as you hit return. If you send "hello,
+world!" it will appear to other users (and yourself) like this:
+
+  (3, guest53613) hello, world!
+
+4) "guest53613"? That's gross.
+
+Yes, the default usernames are designed to make you want to change them. To
+change your name, you'll send a _command_. There are several available
+chat-related commands, all of which start with a dot. For example, the command
+to change your username is ".name", which can be abbreviated to ".n" if you're
+in a hurry. It works like this:
+
+  .name Gonzo the Magnificent
+  > Name changed.
+
+Now, if you send "I am magnificent!", you and others in your room will see:
+
+  (3, Gonzo the Magnificent) I am magnificent!
+
+You cannot use the same name as another logged-in user.
+
+5) What's the "3" for?
+
+When you first connected, you were assigned a _line number_. Line numbers start
+at 0 (reserved for the server admin) and go up to 60, and each user gets a
+different one. They are used in some _commands_ to quickly identify a user. For
+example, if someone on line 14 is bothering you, you can _gag_ them by sending
+the command ".gag 14" (or ".g14" for short), after which you will not receive
+any messages sent by the user on that line.
+
+You cannot change your line number while you're logged in, but if you log out
+and log back in, your line number might change. You can also use line numbers as
+a rough estimate of how long someone has been online, since they're always
+assigned lowest-number-first (but see the .who and .whois commands for detailed
+info).
+
+6) How can I tell what room I'm in?
+
+Well, it's pretty easy, because right now there is only one room, called Home.
+Therefore you are in it.
+
+7) Got it. What other commands are there?
+
+Here's the list. Note that all commands may be abbreviated, so long as the
+abbreviation is unambiguous. So ".hu" will work for ".hush", but ".h" won't work
+because I don't know if you want ".hush" or ".help".
+
+  Chat Commands
+
+  .gag <n>          Suppress all messages from line number n.
+  .yell <msg>       Send <msg> to all users on the system who are not hushed,
+                    regardless of the room they're in.
+  .hush             Suppress yells. If you are hushed, you also cannot yell.
+  .page <n> <msg>   Send <msg> to the user on line number n.
+  :<message>        Send a special "emote" chat message. Also known as posing.
+                    For example ":smiles" will appear as "(3) Alex smiles"
+
+  Info Commands
+
+  .look             Show the name and description of the room you're in.
+  .who              Show a list of all users on the system.
+  .whois <n>        Show detailed information about the user on line number n.
+  .name <newname>   Change your name to <newname>.
+  .help             Show this help.
+  .?                Show a description of available commands.
+
+8) Sometimes I get a message while I'm typing and the text breaks up across
+lines in funny ways.
+
+You're probably using telnet to connect. You might find that you prefer
+dedicated client software like Ken Keys' TinyFugue, which keeps the input and
+output buffers separate. See http://en.wikipedia.org/wiki/TinyFugue.

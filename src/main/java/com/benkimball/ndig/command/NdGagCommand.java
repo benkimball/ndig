@@ -16,12 +16,16 @@ public class NdGagCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        NdPlayer brat = game.roster.getPlayer(line_number);
-        boolean ignoring = player.toggleIgnore(brat);
-        if(ignoring) {
-            player.tell(String.format("Ignoring (%d) %s", line_number, brat.getName()));
+        if(player.getLineNumber() == line_number) {
+            player.tell("You cannot ignore yourself.");
         } else {
-            player.tell(String.format("No longer ignoring (%d) %s", line_number, brat.getName()));
+            NdPlayer brat = game.roster.getPlayer(line_number);
+            boolean ignoring = player.toggleIgnore(brat);
+            if(ignoring) {
+                player.tell(String.format("Ignoring (%d) %s", line_number, brat.getName()));
+            } else {
+                player.tell(String.format("No longer ignoring (%d) %s", line_number, brat.getName()));
+            }
         }
         return false;
     }

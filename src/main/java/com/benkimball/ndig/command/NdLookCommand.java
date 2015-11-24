@@ -7,15 +7,11 @@ import net.jcip.annotations.Immutable;
 import java.util.regex.Matcher;
 
 @Immutable
-public class NdHushCommand implements NdCommand {
+public class NdLookCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        if(player.toggleHushed()) {
-            player.tell("Yells suppressed.");
-        } else {
-            player.tell("Yells no longer suppressed.");
-        }
+        player.tell(player.getLocation().getAppearance());
         return false;
     }
 }

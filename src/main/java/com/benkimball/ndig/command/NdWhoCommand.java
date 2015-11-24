@@ -12,7 +12,7 @@ public class NdWhoCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        String fmt = "> %-5s %-20s %-8s %-30s %-8s";
+        String fmt = "%-5s %-20s %-8s %-30s %-8s";
         player.tell(String.format(fmt, "line", "name", "idle", "from", "online"));
         game.roster.eachPlayer(p -> {
             player.tell(String.format(fmt, p.getLineNumber(), p.getName(), p.getIdleDuration(),

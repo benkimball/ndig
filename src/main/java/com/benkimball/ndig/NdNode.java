@@ -70,6 +70,10 @@ public class NdNode {
 //        return this;
 //    }
 
+    public synchronized String getAppearance() {
+        return getName() + "\n" + getDescription();
+    }
+
     public synchronized void tell(String message, NdPlayer from) {
         occupants.stream().forEach(p -> p.tell(message, from));
     }

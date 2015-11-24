@@ -20,7 +20,7 @@ public class NdPageCommand implements NdCommand {
     public boolean invoke(NdGame game, NdPlayer player) {
         NdPlayer subject = game.roster.getPlayer(line_number);
         subject.tell(String.format("(%d,p %s) %s", player.getLineNumber(), player.getName(), text), player);
-        player.tell("> Private message sent.");
+        player.tell("Private message sent.");
         return false;
     }
 }

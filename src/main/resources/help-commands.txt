@@ -1,0 +1,18 @@
+  Chat Commands
+
+  .gag <n>          Suppress all messages from line number n.
+  .yell <msg>       Send <msg> to all users on the system who are not hushed,
+                    regardless of the room they're in.
+  .hush             Suppress yells. If you are hushed, you also cannot yell.
+  .page <n> <msg>   Send <msg> to the user on line number n.
+  :<message>        Send a special "emote" chat message. Also known as posing.
+                    For example ":smiles" will appear as "(3) Alex smiles"
+
+  Info Commands
+
+  .look             Show the name and description of the room you're in.
+  .who              Show a list of all users on the system.
+  .whois <n>        Show detailed information about the user on line number n.
+  .name <newname>   Change your name to <newname>.
+  .help             Show long-form help.
+  .?                Show this help.
