@@ -5,7 +5,6 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.jcip.annotations.ThreadSafe;
-import org.neo4j.graphdb.GraphDatabaseService;
 
 @ThreadSafe
 public class NdGame {
@@ -32,9 +31,9 @@ public class NdGame {
 
     public void handleLogout(NdPlayer player) {
         String message = String.format("Line %d (%s) has departed.", player.getLineNumber(), player.getName());
-        NdNode location = player.getLocation();
-        if(location != null) {
-            location.out(player);
+        NdRoom room = player.getLocation();
+        if(room != null) {
+            room.out(player);
         }
         roster.removePlayer(player);
         broadcast(message);

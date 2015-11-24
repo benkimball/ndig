@@ -17,7 +17,7 @@ public class NdPlayer {
     private final Instant on_since;
     private Instant last_seen;
     @GuardedBy("this") private String name;
-    @GuardedBy("this") private NdNode location;
+    @GuardedBy("this") private NdRoom location;
     private final Set<NdPlayer> ignores = Collections.synchronizedSet(new HashSet<>());
     private final String from;
     private boolean hushed;
@@ -74,11 +74,11 @@ public class NdPlayer {
         return null;
     }
 
-    public synchronized void setLocation(NdNode location) {
-        this.location = location;
+    public synchronized void setLocation(NdRoom room) {
+        this.location = room;
     }
 
-    public synchronized NdNode getLocation() {
+    public synchronized NdRoom getLocation() {
         return location;
     }
 
