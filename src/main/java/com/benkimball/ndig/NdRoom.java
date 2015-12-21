@@ -5,6 +5,7 @@ import net.jcip.annotations.ThreadSafe;
 import org.neo4j.graphdb.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 enum EdgeType implements RelationshipType {
@@ -13,12 +14,25 @@ enum EdgeType implements RelationshipType {
 
 @ThreadSafe
 public class NdRoom {
+
+    private static final ConcurrentSkipListMap<Number,NdRoom> rooms;
+
+    private static final String NO_NAME;
+    private static final String NO_DESC;
+
+    static {
+        rooms = new ConcurrentSkipListMap<>();
+        NO_NAME = "Void";
+        NO_DESC = "This room is without form, and void; and darkness is upon the face of the deep.";
+    }
+
     @GuardedBy("this") private final CopyOnWriteArraySet<NdPlayer> occupants =
             new CopyOnWriteArraySet<>();
     private final Node node;
 
-    private static final String NO_NAME = "Void";
-    private static final String NO_DESC = "This room is without form, and void; and darkness is upon the face of the deep.";
+    private String name;
+    private String description;
+    private Number id;
 
     public NdRoom(Node node) {
         this.node = node;

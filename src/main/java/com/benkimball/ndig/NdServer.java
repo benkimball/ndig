@@ -1,20 +1,11 @@
 package com.benkimball.ndig;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.DefaultChannelConfig;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.concurrent.GlobalEventExecutor;
-import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
-import javax.management.relation.Relation;
-import java.io.File;
 
 public class NdServer {
 
