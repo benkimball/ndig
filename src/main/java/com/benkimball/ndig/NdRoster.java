@@ -7,7 +7,6 @@ import net.jcip.annotations.ThreadSafe;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @ThreadSafe
 public class NdRoster {
@@ -16,7 +15,7 @@ public class NdRoster {
     @GuardedBy("lock") private final ConcurrentHashMap<Integer,NdPlayer> lines;
 
     public NdRoster(int size) {
-        available_lines = new ConcurrentSkipListSet();
+        available_lines = new ConcurrentSkipListSet<>();
         for (int ix = 0; ix < size; ix++) available_lines.add(ix);
         lines = new ConcurrentHashMap<>(size);
     }

@@ -1,36 +1,35 @@
 package com.benkimball.ndig;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
-public enum NdDirection {
-    NORTH,
-    SOUTH,
-    EAST,
-    WEST,
-    NORTHEAST,
-    SOUTHWEST,
-    NORTHWEST,
-    SOUTHEAST,
-    UP,
-    DOWN;
+public class NdDirection {
 
-    private static final Map<NdDirection, NdDirection> opposites = new HashMap<>();
+    private static final List<String> pairs = Arrays.asList(
+            "north", "south",
+            "east", "west",
+            "up", "down",
+            "northeast", "southwest",
+            "northwest", "southeast",
+            "in", "out",
+            "clockwise", "anticlockwise",
+            "widdershins", "turnwise",
+            "spinward", "trailing",
+            "rimward", "hubward",
+            "left", "right",
+            "backward", "forward",
+            "toward", "away",
+            "over", "under");
 
-    static {
-        opposites.put(NORTH, SOUTH);
-        opposites.put(SOUTH, NORTH);
-        opposites.put(EAST, WEST);
-        opposites.put(WEST, EAST);
-        opposites.put(NORTHEAST, SOUTHWEST);
-        opposites.put(NORTHWEST, SOUTHEAST);
-        opposites.put(SOUTHWEST, NORTHEAST);
-        opposites.put(SOUTHEAST, NORTHWEST);
-        opposites.put(UP, DOWN);
-        opposites.put(DOWN, UP);
-    }
-
-    public NdDirection reverse(NdDirection direction) {
-        return opposites.get(direction);
+    public static String reverse(String direction) {
+        String reversed;
+        int i = pairs.indexOf(direction.toLowerCase());
+        if(i == -1) {
+            reversed = "anti" + direction;
+        } else {
+            int j = (i % 2 == 0) ? i + 1 : i - 1;
+            reversed = pairs.get(j);
+        }
+        return reversed;
     }
 }

@@ -10,13 +10,11 @@ import net.jcip.annotations.ThreadSafe;
 public class NdGame {
 
     public final NdRoster roster; // is thread safe
-    public final NdMap map; // is thread safe
 
     private final ChannelGroup allChannels =
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public NdGame(int max_connections) {
-        this.map = new NdMap();
         this.roster = new NdRoster(max_connections);
     }
 
