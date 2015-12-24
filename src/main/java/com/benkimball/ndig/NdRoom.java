@@ -29,7 +29,7 @@ public class NdRoom {
     private static final GraphDatabaseService gdb;
     private static final NdRoom home;
     private static AtomicInteger last_id = new AtomicInteger(0);
-    private static final Map<Integer,NdRoom> active_rooms;
+    private static final Map<Long,NdRoom> active_rooms;
 
     static {
         gdb = new GraphDatabaseFactory().newEmbeddedDatabase(new File("target/graph.db"));
@@ -51,7 +51,7 @@ public class NdRoom {
         }
 
         active_rooms = new ConcurrentHashMap<>();
-        active_rooms.put(0, home); // home is always active
+        active_rooms.put(0L, home); // home is always active
     }
 
     private final Node node;
@@ -81,8 +81,8 @@ public class NdRoom {
         return node;
     }
 
-    public Integer getId() {
-        return (Integer)getProperty("id", null);
+    public Long getId() {
+        return (Long)getProperty("id", null);
     }
 
     public String getName() {
@@ -128,7 +128,7 @@ public class NdRoom {
             Result result = gdb.execute("MATCH (:Room)-[:EXIT {direction: {d}}]->(n:Room) RETURN n;", params)) {
             if(result.hasNext()) {
                 Node destination_node = (Node)result.columnAs("n");
-                Integer destination_id = (Integer)node.getProperty("id");
+                Long destination_id = (Long)node.getProperty("id");
                 destination = active_rooms.putIfAbsent(destination_id, new NdRoom(destination_node));
             }
             tx.success();

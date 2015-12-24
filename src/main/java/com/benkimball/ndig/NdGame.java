@@ -5,9 +5,12 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.jcip.annotations.ThreadSafe;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @ThreadSafe
 public class NdGame {
+    private static final Log log = LogFactory.getLog(NdGame.class);
 
     public final NdRoster roster; // is thread safe
 
@@ -16,6 +19,7 @@ public class NdGame {
 
     public NdGame(int max_connections) {
         this.roster = new NdRoster(max_connections);
+        log.info("Created for n connections");
     }
 
     public NdPlayer handleLogin(ChannelHandlerContext ctx) {

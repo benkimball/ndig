@@ -1,6 +1,7 @@
 package com.benkimball.ndig;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -11,12 +12,11 @@ import org.apache.commons.logging.LogFactory;
 
 public class NdServer {
 
-    private static Log log = LogFactory.getLog(NdServer.class);
+    private static final Log log = LogFactory.getLog(NdServer.class);
     private static final int PORT = 9916;
     public static final NdGame game = new NdGame(60); // safely published by static initializer
 
     public static void main(String[] args) throws Exception {
-        log.info("Starting up...");
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -29,6 +29,7 @@ public class NdServer {
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+            log.info("Shut down gracefully.");
         }
     }
 }
