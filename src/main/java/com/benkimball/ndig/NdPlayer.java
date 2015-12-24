@@ -74,8 +74,17 @@ public class NdPlayer {
         return null;
     }
 
+    public synchronized void follow(String direction) {
+        NdRoom new_location = location.getDestination(direction);
+        if(new_location != null) {
+            location.out(this);
+            location = new_location;
+            location.in(this);
+        }
+    }
+
     public synchronized void setLocation(NdRoom room) {
-        this.location = room;
+        location = room;
     }
 
     public synchronized NdRoom getLocation() {

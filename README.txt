@@ -6,9 +6,11 @@ TODO: when a player moves to a room, they're moved to a different instance of th
 TODO: embedded neo4j may not be the way to go. With a server I get http management
   and the ability to use a better API.
 
-TODO: currently digging creates a one-way tunnel, stranding the digger in the new room
+TODO: methods should raise exceptions rather than returning null for errors
 
-TODO: doesn't it seem like NdMap could be replaced by static functions on NdRoom?
+TODO: better ambiguity resolution, e.g., >n expands to >north if north direction exists
+
+TODO: logging
 
 gdb holds:
   node "Home"
@@ -38,5 +40,3 @@ player digs
   persist node/rels in gdb
   reassign player to new instance
 
-NdRoom holds static concurrent skip list map of ints to ndrooms, 0 is root
-  can look up rooms by number

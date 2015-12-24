@@ -13,7 +13,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         player = game.handleLogin(ctx);
-        NdRoom starting_location = game.map.getDefaultRoom();
+        NdRoom starting_location = NdRoom.getDefaultRoom();
         if(player == null) {
             ctx.writeAndFlush("Sorry, server is full.\n\n").addListener(ChannelFutureListener.CLOSE);
         } else if(starting_location == null) {
