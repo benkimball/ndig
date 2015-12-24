@@ -10,6 +10,8 @@ TODO: methods should raise exceptions rather than returning null for errors
 
 TODO: better ambiguity resolution, e.g., >n expands to >north if north direction exists
 
+TODO: logging
+
 gdb holds:
   node "Home"
     -EXIT("south")-> node "Aussie"
