@@ -4,9 +4,12 @@ import com.benkimball.ndig.command.NdCommand;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
+    private static final Log log = LogFactory.getLog("NdCommandHandler");
     private final NdGame game = NdServer.game;
     private NdPlayer player;
 
@@ -35,6 +38,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
         player.seen();
+        log.info(String.format("%s [%d]: %s", player.getName(), player.getLineNumber(), in.getClass().getSimpleName()));
         boolean quitting = in.invoke(game, player);
         if(quitting) ctx.close();
     }
@@ -46,6 +50,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.warn("exception caught", cause);
         cause.printStackTrace();
         ctx.close();
     }

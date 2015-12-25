@@ -6,6 +6,8 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 
 import com.benkimball.ndig.command.*;
 import net.jcip.annotations.Immutable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
 import java.util.regex.*;
@@ -14,14 +16,19 @@ import java.util.regex.*;
 @Sharable
 public class NdCommandDecoder extends MessageToMessageDecoder<String> {
 
+    // @commands
     private static final Pattern DIG       = Pattern.compile("^@d(i|ig)? (?<text>.+)$");
     private static final Pattern NAMEROOM  = Pattern.compile("^@n(a|am|ame)? (?<text>.+)$");
     private static final Pattern DESCROOM  = Pattern.compile("^@d(e|es|esc|escr|escri|escrib|escribe)? (?<text>.+)$");
     private static final Pattern BROADCAST = Pattern.compile("^@b(r|ro|roa|road|roadc|roadca|roadcas|roadcast)? (?<text>.+)$");
 
+    // >commands
     private static final Pattern MOVE      = Pattern.compile("^> ?(?<text>.+)$");
 
+    // :commands
     private static final Pattern EMOTE     = Pattern.compile("^:(?<text>.+)$");
+
+    // .commands
     private static final Pattern QUIT      = Pattern.compile("^\\.q(u|ui|uit)?$");
     private static final Pattern HUSH      = Pattern.compile("^\\.h(u|us|ush)?$");
     private static final Pattern GAG       = Pattern.compile("^\\.g(a|ag)? ?(?<linenumber>\\d+)$");
@@ -33,71 +40,35 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern PAGE      = Pattern.compile("^\\.p(a|ag|age)? ?(?<linenumber>\\d+) (?<text>.*)$");
     private static final Pattern HELP      = Pattern.compile("^\\.he(l|lp)?$");
     private static final Pattern SHORT     = Pattern.compile("^\\.\\?$");
-    private static final Pattern NULL      = Pattern.compile("^[:\\.]?$");
 
+    // not a command
+    private static final Pattern NULL      = Pattern.compile("^[:\\.]?$");
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
         Matcher m;
+        NdCommand decoded;
 
-        m = DIG.matcher(msg);
-        if(m.matches()) { out.add(new NdDigCommand(m.group("text"))); return; }
+        if((m = DIG.matcher(msg)).matches()) decoded = new NdDigCommand(m.group("text"));
+        else if((m = NAMEROOM.matcher(msg)).matches()) decoded = new NdNameRoomCommand(m.group("text"));
+        else if((m = DESCROOM.matcher(msg)).matches()) decoded = new NdDescribeRoomCommand(m.group("text"));
+        else if((m = BROADCAST.matcher(msg)).matches()) decoded = new NdBroadcastCommand(m.group("text"));
+        else if((m = MOVE.matcher(msg)).matches()) decoded = new NdMoveCommand(m.group("text"));
+        else if((m = EMOTE.matcher(msg)).matches()) decoded = new NdEmoteCommand(m.group("text"));
+        else if((m = QUIT.matcher(msg)).matches()) decoded = new NdQuitCommand();
+        else if((m = HUSH.matcher(msg)).matches()) decoded = new NdHushCommand();
+        else if((m = GAG.matcher(msg)).matches()) decoded = new NdGagCommand(Integer.parseInt(m.group("linenumber")));
+        else if((m = LOOK.matcher(msg)).matches()) decoded = new NdLookCommand();
+        else if((m = WHO.matcher(msg)).matches()) decoded = new NdWhoCommand();
+        else if((m = WHOIS.matcher(msg)).matches()) decoded = new NdWhoisCommand(Integer.parseInt(m.group("linenumber")));
+        else if((m = YELL.matcher(msg)).matches()) decoded = new NdYellCommand(m.group("text"));
+        else if((m = NAME.matcher(msg)).matches()) decoded = new NdNameCommand(m.group("text"));
+        else if((m = PAGE.matcher(msg)).matches()) decoded = new NdPageCommand(Integer.parseInt(m.group("linenumber")), m.group("text"));
+        else if((m = HELP.matcher(msg)).matches()) decoded = new NdHelpCommand();
+        else if((m = SHORT.matcher(msg)).matches()) decoded = new NdShortHelpCommand();
+        else if(NULL.matcher(msg).matches()) decoded = new NdNullCommand();
+        else decoded = new NdSayCommand(msg);
 
-        m = NAMEROOM.matcher(msg);
-        if(m.matches()) { out.add(new NdNameRoomCommand(m.group("text"))); return; }
-
-        m = DESCROOM.matcher(msg);
-        if(m.matches()) { out.add(new NdDescribeRoomCommand(m.group("text"))); return; }
-
-        m = BROADCAST.matcher(msg);
-        if(m.matches()) { out.add(new NdBroadcastCommand(m.group("text"))); return; }
-
-        m = MOVE.matcher(msg);
-        if(m.matches()) { out.add(new NdMoveCommand(m.group("text"))); return; }
-
-        m = EMOTE.matcher(msg);
-        if(m.matches()) { out.add(new NdEmoteCommand(m.group("text"))); return; }
-
-        m = QUIT.matcher(msg);
-        if(m.matches()) { out.add(new NdQuitCommand()); return; }
-
-        m = HUSH.matcher(msg);
-        if(m.matches()) { out.add(new NdHushCommand()); return; }
-
-        m = GAG.matcher(msg);
-        if(m.matches()) { out.add(new NdGagCommand(Integer.parseInt(m.group("linenumber")))); return; }
-
-        m = LOOK.matcher(msg);
-        if(m.matches()) { out.add(new NdLookCommand()); return; }
-
-        m = WHO.matcher(msg);
-        if(m.matches()) { out.add(new NdWhoCommand()); return; }
-
-        m = WHOIS.matcher(msg);
-        if(m.matches()) { out.add(new NdWhoisCommand(Integer.parseInt(m.group("linenumber")))); return; }
-
-        m = YELL.matcher(msg);
-        if(m.matches()) { out.add(new NdYellCommand(m.group("text"))); return; }
-
-        m = NAME.matcher(msg);
-        if(m.matches()) { out.add(new NdNameCommand(m.group("text"))); return; }
-
-        m = PAGE.matcher(msg);
-        if(m.matches()) {
-            out.add(new NdPageCommand(Integer.parseInt(m.group("linenumber")), m.group("text")));
-            return;
-        }
-
-        m = HELP.matcher(msg);
-        if(m.matches()) { out.add(new NdHelpCommand()); return; }
-
-        m = SHORT.matcher(msg);
-        if(m.matches()) { out.add(new NdShortHelpCommand()); return; }
-
-        m = NULL.matcher(msg);
-        if(m.matches()) { return; }
-
-        // if all else fails, it's a say
-        out.add(new NdSayCommand(msg));
+        out.add(decoded);
     }
 }

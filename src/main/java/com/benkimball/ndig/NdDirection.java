@@ -1,9 +1,14 @@
 package com.benkimball.ndig;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class NdDirection {
+
+    private static final Log log = LogFactory.getLog("NdDirection");
 
     private static final List<String> pairs = Arrays.asList(
             "north", "south",
@@ -30,6 +35,7 @@ public class NdDirection {
             int j = (i % 2 == 0) ? i + 1 : i - 1;
             reversed = pairs.get(j);
         }
+        log.debug(String.format("Opposite of %s is %s", direction, reversed));
         return reversed;
     }
 }

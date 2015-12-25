@@ -8,10 +8,13 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import net.jcip.annotations.ThreadSafe;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @ThreadSafe
 public class NdServerInitializer extends ChannelInitializer<SocketChannel> {
 
+    private static final Log log = LogFactory.getLog("NdServerInitializer");
     private static final StringDecoder DECODER = new StringDecoder();
     private static final NdCommandDecoder COMMAND_DECODER = new NdCommandDecoder();
     private static final StringEncoder ENCODER = new StringEncoder();
@@ -25,5 +28,6 @@ public class NdServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(COMMAND_DECODER);
         pipeline.addLast(ENCODER);
         pipeline.addLast(new NdCommandHandler());
+        log.info("Initialized channel");
     }
 }
