@@ -26,6 +26,8 @@ public class NdServer {
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new NdServerInitializer());
             b.bind(PORT).sync().channel().closeFuture().sync();
+        } catch (Exception e) {
+            log.fatal("Caught exception", e);
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
