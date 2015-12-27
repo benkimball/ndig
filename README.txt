@@ -6,3 +6,6 @@ TODO: embedded neo4j may not be the way to go. With a server I get http manageme
 TODO: methods should raise exceptions rather than returning null for errors
 
 TODO: better ambiguity resolution, e.g., >n expands to >north if north direction exists
+
+TODO: print extra newline upon entering a room
+TODO: provide feedback after describing a room
