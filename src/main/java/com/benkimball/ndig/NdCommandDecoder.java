@@ -6,8 +6,6 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 
 import com.benkimball.ndig.command.*;
 import net.jcip.annotations.Immutable;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
 import java.util.regex.*;
@@ -55,17 +53,17 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
         else if((m = BROADCAST.matcher(msg)).matches()) decoded = new NdBroadcastCommand(m.group("text"));
         else if((m = MOVE.matcher(msg)).matches()) decoded = new NdMoveCommand(m.group("text"));
         else if((m = EMOTE.matcher(msg)).matches()) decoded = new NdEmoteCommand(m.group("text"));
-        else if((m = QUIT.matcher(msg)).matches()) decoded = new NdQuitCommand();
-        else if((m = HUSH.matcher(msg)).matches()) decoded = new NdHushCommand();
+        else if((QUIT.matcher(msg)).matches()) decoded = new NdQuitCommand();
+        else if((HUSH.matcher(msg)).matches()) decoded = new NdHushCommand();
         else if((m = GAG.matcher(msg)).matches()) decoded = new NdGagCommand(Integer.parseInt(m.group("linenumber")));
-        else if((m = LOOK.matcher(msg)).matches()) decoded = new NdLookCommand();
-        else if((m = WHO.matcher(msg)).matches()) decoded = new NdWhoCommand();
+        else if((LOOK.matcher(msg)).matches()) decoded = new NdLookCommand();
+        else if((WHO.matcher(msg)).matches()) decoded = new NdWhoCommand();
         else if((m = WHOIS.matcher(msg)).matches()) decoded = new NdWhoisCommand(Integer.parseInt(m.group("linenumber")));
         else if((m = YELL.matcher(msg)).matches()) decoded = new NdYellCommand(m.group("text"));
         else if((m = NAME.matcher(msg)).matches()) decoded = new NdNameCommand(m.group("text"));
         else if((m = PAGE.matcher(msg)).matches()) decoded = new NdPageCommand(Integer.parseInt(m.group("linenumber")), m.group("text"));
-        else if((m = HELP.matcher(msg)).matches()) decoded = new NdHelpCommand();
-        else if((m = SHORT.matcher(msg)).matches()) decoded = new NdShortHelpCommand();
+        else if((HELP.matcher(msg)).matches()) decoded = new NdHelpCommand();
+        else if((SHORT.matcher(msg)).matches()) decoded = new NdShortHelpCommand();
         else if(NULL.matcher(msg).matches()) decoded = new NdNullCommand();
         else decoded = new NdSayCommand(msg);
 
