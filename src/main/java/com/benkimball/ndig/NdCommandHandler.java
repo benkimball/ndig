@@ -38,7 +38,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NdCommand in) throws Exception {
         player.seen();
-        log.info(String.format("%s [%d]: %s", player.getName(), player.getLineNumber(), in.getClass().getSimpleName()));
+        log.debug(String.format("%s [%d]: %s", player.getName(), player.getLineNumber(), in.getClass().getSimpleName()));
         boolean quitting = in.invoke(game, player);
         if(quitting) ctx.close();
     }

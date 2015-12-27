@@ -146,8 +146,14 @@ public class NdRoom {
                     Node destination_node = r.getEndNode();
                     Long destination_id = (Long) destination_node.getProperty("id");
                     log.info(String.format("Found matching exit leading to room %d", destination_id));
-                    destination = new NdRoom(destination_id, destination_node);
-                    active_rooms.putIfAbsent(destination_id, destination);
+                    destination = active_rooms.get(destination_id);
+                    if(destination == null) {
+                        log.info("Destination room not found in active rooms");
+                        destination = new NdRoom(destination_id, destination_node);
+                        active_rooms.putIfAbsent(destination_id, destination);
+                    } else {
+                        log.info("Found destination room in active rooms");
+                    }
                     log.debug(String.format("active_rooms[%d] now holds room %d", destination_id,
                             active_rooms.get(destination_id).getId()));
                     break;
