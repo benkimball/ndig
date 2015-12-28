@@ -1,6 +1,5 @@
 ndig is a haven-type chat server mixed with a MUD.
 
-TODO: Connect to db on startup to eliminate delay when player logs in
 TODO: Reserve line 0
 
 Future plans:

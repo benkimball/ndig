@@ -18,6 +18,7 @@ public class NdGame {
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public NdGame(int max_connections) {
+        NdRoom.initialize();
         this.roster = new NdRoster(max_connections);
     }
 

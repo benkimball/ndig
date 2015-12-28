@@ -29,36 +29,10 @@ public class NdRoom {
     private static final String NO_DESCRIPTION =
             "This room is without form, and void; and darkness is upon the face of the deep.";
 
-    private static final GraphDatabaseService gdb;
-    private static final NdRoom home;
+    private static GraphDatabaseService gdb;
+    private static NdRoom home = null;
     private static AtomicInteger last_id = new AtomicInteger(0);
-    private static final Map<Long,NdRoom> active_rooms;
-
-    static {
-        gdb = new GraphDatabaseFactory().newEmbeddedDatabase(new File("target/graph.db"));
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() { gdb.shutdown(); }
-        });
-        log.info("Initialized graph database");
-    }
-
-    static {
-        try(Transaction tx = gdb.beginTx();
-            Result result = gdb.execute("MERGE (n:Room {id: 0})" +
-                    " ON CREATE SET" +
-                    " n.name='Home'" +
-                    ", n.description='This comfortable room has lots of rugs and pillows.'" +
-                    " RETURN n")) {
-            home = new NdRoom(0L, (Node)result.columnAs("n").next());
-            tx.success();
-            log.info("Initialized default room");
-        }
-
-        active_rooms = new ConcurrentHashMap<>();
-        active_rooms.put(0L, home); // home is always active
-        log.info("Added default room to active rooms");
-    }
+    private static Map<Long,NdRoom> active_rooms;
 
     private final Node node;
     private final Set<NdPlayer> occupants;
@@ -80,6 +54,30 @@ public class NdRoom {
             tx.success();
         }
         occupants = new CopyOnWriteArraySet<>();
+    }
+
+    public static void initialize() {
+        gdb = new GraphDatabaseFactory().newEmbeddedDatabase(new File("target/graph.db"));
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() { gdb.shutdown(); }
+        });
+        log.info("Initialized graph database");
+
+        try(Transaction tx = gdb.beginTx();
+            Result result = gdb.execute("MERGE (n:Room {id: 0})" +
+                    " ON CREATE SET" +
+                    " n.name='Home'" +
+                    ", n.description='This comfortable room has lots of rugs and pillows.'" +
+                    " RETURN n")) {
+            home = new NdRoom(0L, (Node)result.columnAs("n").next());
+            tx.success();
+            log.info("Initialized default room");
+        }
+
+        active_rooms = new ConcurrentHashMap<>();
+        active_rooms.put(0L, home); // home is always active
+        log.info("Added default room to active rooms");
     }
 
     public static NdRoom getDefaultRoom() throws NdException {
