@@ -40,7 +40,7 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern SHORT     = Pattern.compile("^\\.\\?$");
 
     // not a command
-    private static final Pattern NULL      = Pattern.compile("^[:\\.]?$");
+    private static final Pattern NULL      = Pattern.compile("^[:\\.>@]?$");
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {

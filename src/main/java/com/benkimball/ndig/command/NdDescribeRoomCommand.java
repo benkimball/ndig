@@ -15,6 +15,7 @@ public class NdDescribeRoomCommand implements NdCommand {
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
         player.getLocation().setDescription(description);
+        player.tell("Room described.");
         return false;
     }
 }

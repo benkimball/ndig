@@ -139,27 +139,47 @@ public class NdRoom {
 
     public NdRoom getDestination(String exitName) {
         NdRoom destination = null;
+        Map<String,Node> exitsByName = new HashMap<>();
         log.info(String.format("Searching for exit %s from room %d", exitName, getId()));
         try (Transaction tx = gdb.beginTx()) {
             for (Relationship r : node.getRelationships(EdgeType.EXIT, Direction.OUTGOING)) {
-                if(r.getProperty("direction", null).equals(exitName)) {
-                    Node destination_node = r.getEndNode();
-                    Long destination_id = (Long) destination_node.getProperty("id");
-                    log.info(String.format("Found matching exit leading to room %d", destination_id));
-                    destination = active_rooms.get(destination_id);
-                    if(destination == null) {
-                        log.info("Destination room not found in active rooms");
-                        destination = new NdRoom(destination_id, destination_node);
-                        active_rooms.putIfAbsent(destination_id, destination);
-                    } else {
-                        log.info("Found destination room in active rooms");
-                    }
-                    log.debug(String.format("active_rooms[%d] now holds room %d", destination_id,
-                            active_rooms.get(destination_id).getId()));
-                    break;
+                String direction = (String) r.getProperty("direction", null);
+                Node destination_node = r.getEndNode();
+                if(direction != null) {
+                    exitsByName.put(direction, destination_node);
                 }
             }
             tx.success();
+        }
+
+        String[] candidates = exitsByName.
+                keySet().
+                stream().
+                filter(key -> key.startsWith(exitName)).
+                toArray(String[]::new);
+
+        if(candidates.length == 0) {
+            log.info(String.format("Found no exits for direction %s", exitName));
+        } else if(candidates.length > 1) {
+            log.info(String.format("Ambiguous exit for direction %s", exitName));
+        } else {
+            Node destination_node = exitsByName.get(candidates[0]);
+            Long destination_id;
+            try(Transaction tx = gdb.beginTx()) {
+                destination_id = (Long)destination_node.getProperty("id");
+                tx.success();
+            }
+            log.info(String.format("Found matching exit leading to room %d", destination_id));
+            destination = active_rooms.get(destination_id);
+            if(destination == null) {
+                log.info("Destination room not found in active rooms");
+                destination = new NdRoom(destination_id, destination_node);
+                active_rooms.putIfAbsent(destination_id, destination);
+            } else {
+                log.info("Found destination room in active rooms");
+            }
+            log.debug(String.format("active_rooms[%d] now holds room %d", destination_id,
+                    active_rooms.get(destination_id).getId()));
         }
         if(destination == null) {
             log.info("No matching exit found");
@@ -186,7 +206,7 @@ public class NdRoom {
     }
 
     public String getAppearance() {
-        StringJoiner sj = new StringJoiner("\n");
+        StringJoiner sj = new StringJoiner("\n", "\n", "");
         sj.add(getName());
         sj.add(getDescription());
         if(hasExits()) sj.add(getExitsAsString());
