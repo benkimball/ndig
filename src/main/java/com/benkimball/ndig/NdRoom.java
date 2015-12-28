@@ -129,7 +129,7 @@ public class NdRoom {
             for (Relationship r : node.getRelationships(EdgeType.EXIT, Direction.OUTGOING)) {
                 String direction = (String)r.getProperty("direction");
                 Node destination_node = r.getEndNode();
-                Long destination_id = (Long)r.getProperty("id");
+                Long destination_id = (Long)destination_node.getProperty("id");
 
                 if(direction.equalsIgnoreCase(exitName)) {
                     log.info(String.format("Found matching exit leading to room %d", destination_id));
