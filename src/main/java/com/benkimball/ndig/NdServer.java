@@ -15,7 +15,7 @@ public class NdServer {
     private static final int PORT = 9916;
     public static final NdGame game = new NdGame(60); // safely published by static initializer
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         log.info("Starting up");
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

@@ -18,7 +18,7 @@ public class NdServerInitializer extends ChannelInitializer<SocketChannel> {
     private static final StringEncoder STRING_ENCODER = new StringEncoder();
 
     @Override
-    protected void initChannel(SocketChannel socketChannel) throws Exception {
+    protected void initChannel(SocketChannel socketChannel) {
         socketChannel.pipeline().
                 addLast(new LineBasedFrameDecoder(8192)).
                 addLast(STRING_DECODER).

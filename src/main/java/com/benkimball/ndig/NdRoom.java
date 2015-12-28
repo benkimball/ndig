@@ -9,7 +9,6 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -83,7 +82,8 @@ public class NdRoom {
         occupants = new CopyOnWriteArraySet<>();
     }
 
-    public static NdRoom getDefaultRoom() {
+    public static NdRoom getDefaultRoom() throws NdException {
+        if(home == null) throw new NdException("This server has no rooms");
         return home;
     }
 
@@ -95,100 +95,63 @@ public class NdRoom {
         return (Long)getProperty("id", null);
     }
 
+    public boolean isHome() {
+        return(0L == getId());
+    }
+
     public String getName() {
         return (String)getProperty("name", NO_NAME);
     }
 
-    public boolean setName(String new_name) {
+    public NdResult setName(String new_name) throws NdException {
+        if(isHome()) {
+            log.debug("Denied attempt to set name of Home room");
+            throw new NdException("The Home room may not be renamed");
+        }
         if(new_name.equals("Home")) {
-            log.info("Denied attempt to set name of room to Home");
-            return false;
-        } else {
-            setProperty("name", new_name);
-            log.info(String.format("Changed name of room to %s", new_name));
+            log.debug("Denied attempt to set name of room to Home");
+            throw new NdException("No other room may be named 'Home'");
         }
-        return true;
+        setProperty("name", new_name);
+        log.info(String.format("Changed name of room to %s", new_name));
+        return new NdResult("Room name changed to %s", new_name);
     }
 
-    public String getDescription() {
-        return (String)getProperty("description", NO_DESCRIPTION);
-    }
-
-    public void setDescription(String new_description) {
+    public NdResult setDescription(String new_description) {
         setProperty("description", new_description);
-        log.info(String.format("Changed description of room to %s", new_description));
+        return new NdResult("Changed description of room to %s", new_description);
     }
 
-    public void addExit(String direction, NdRoom destination) {
-        try(Transaction tx = gdb.beginTx()) {
-            Relationship r = node.createRelationshipTo(destination.getNode(), EdgeType.EXIT);
-            r.setProperty("direction", direction);
-            tx.success();
-            log.info(String.format("Added exit pointing %s leading to room %d", direction, destination.getId()));
-        }
-    }
-
-    public boolean hasExits() {
-        boolean has_exits;
-        try(Transaction tx = gdb.beginTx()) {
-            has_exits = node.hasRelationship(EdgeType.EXIT, Direction.OUTGOING);
-            tx.success();
-        }
-        return has_exits;
-    }
-
-    public NdRoom getDestination(String exitName) {
+    public NdRoom getDestination(String exitName) throws NdException {
         NdRoom destination = null;
-        Map<String,Node> exitsByName = new HashMap<>();
-        log.info(String.format("Searching for exit %s from room %d", exitName, getId()));
+        log.info(String.format("Searching for exit %s from %s", exitName, this));
         try (Transaction tx = gdb.beginTx()) {
             for (Relationship r : node.getRelationships(EdgeType.EXIT, Direction.OUTGOING)) {
-                String direction = (String) r.getProperty("direction", null);
+                String direction = (String)r.getProperty("direction");
                 Node destination_node = r.getEndNode();
-                if(direction != null) {
-                    exitsByName.put(direction, destination_node);
+                Long destination_id = (Long)r.getProperty("id");
+
+                if(direction.equalsIgnoreCase(exitName)) {
+                    log.info(String.format("Found matching exit leading to room %d", destination_id));
+                    destination = active_rooms.get(destination_id);
+                    if(destination == null) {
+                        destination = new NdRoom(destination_id, destination_node);
+                        active_rooms.putIfAbsent(destination_id, destination);
+                    }
+                    break;
                 }
             }
             tx.success();
         }
-
-        String[] candidates = exitsByName.
-                keySet().
-                stream().
-                filter(key -> key.startsWith(exitName)).
-                toArray(String[]::new);
-
-        if(candidates.length == 0) {
-            log.info(String.format("Found no exits for direction %s", exitName));
-        } else if(candidates.length > 1) {
-            log.info(String.format("Ambiguous exit for direction %s", exitName));
-        } else {
-            Node destination_node = exitsByName.get(candidates[0]);
-            Long destination_id;
-            try(Transaction tx = gdb.beginTx()) {
-                destination_id = (Long)destination_node.getProperty("id");
-                tx.success();
-            }
-            log.info(String.format("Found matching exit leading to room %d", destination_id));
-            destination = active_rooms.get(destination_id);
-            if(destination == null) {
-                log.info("Destination room not found in active rooms");
-                destination = new NdRoom(destination_id, destination_node);
-                active_rooms.putIfAbsent(destination_id, destination);
-            } else {
-                log.info("Found destination room in active rooms");
-            }
-            log.debug(String.format("active_rooms[%d] now holds room %d", destination_id,
-                    active_rooms.get(destination_id).getId()));
-        }
         if(destination == null) {
             log.info("No matching exit found");
+            throw new NdException("No such exit found");
         }
         return destination;
     }
 
-    public List<String> getExitNames() {
-        List<String> exitNames = new CopyOnWriteArrayList<>();
+    public Set<String> getExitNames() {
+        Set<String> exitNames = new CopyOnWriteArraySet<>();
         try(Transaction tx = gdb.beginTx()) {
             for(Relationship r : node.getRelationships(EdgeType.EXIT, Direction.OUTGOING)) {
                 String exit_name = (String)r.getProperty("direction", null);
@@ -199,17 +162,15 @@ public class NdRoom {
         return exitNames;
     }
 
-    public String getExitsAsString() {
-        StringJoiner sj = new StringJoiner(", ", "Visible exits: ", ".");
-        getExitNames().forEach(sj::add);
-        return sj.toString();
-    }
-
     public String getAppearance() {
         StringJoiner sj = new StringJoiner("\n", "\n", "");
         sj.add(getName());
         sj.add(getDescription());
-        if(hasExits()) sj.add(getExitsAsString());
+        if(hasExits()) {
+            StringJoiner ej = new StringJoiner(", ", "Visible exits: ", ".");
+            getExitNames().forEach(ej::add);
+            sj.add(ej.toString());
+        }
         return sj.toString();
     }
 
@@ -218,7 +179,7 @@ public class NdRoom {
     }
 
     public void in(NdPlayer player) {
-        log.info(String.format("Adding %s to room %d", player.toString(), getId()));
+        log.info(String.format("Adding %s to %s", player, this));
         announceEntrance(player);
         occupants.add(player);
         player.setLocation(this);
@@ -226,15 +187,15 @@ public class NdRoom {
     }
 
     public void out(NdPlayer player) {
-        log.info(String.format("Removing %s from room %d", player.toString(), getId()));
+        log.info(String.format("Removing %s from %s", player, this));
         if(occupants.remove(player)) {
             player.setLocation(null);
             announceDeparture(player);
         } else {
-            log.info(String.format("Unable to remove %s from occupants list", player.toString()));
+            log.info(String.format("Unable to remove %s from occupants list", player));
         }
         if(occupants.isEmpty() && !isHome()) {
-            log.info(String.format("Room %d now empty of occupants, removing from active rooms", getId()));
+            log.info(String.format("%s now empty of occupants, removing from active rooms", this));
             active_rooms.remove(getId());
         }
     }
@@ -254,10 +215,6 @@ public class NdRoom {
         return null;
     }
 
-    public boolean isHome() {
-        return(0L == getId());
-    }
-
     @Override
     public int hashCode() {
         return node.hashCode();
@@ -273,6 +230,9 @@ public class NdRoom {
         return String.format("Room[%d:%s]", getId(), getName());
     }
 
+
+    /********************** PRIVATE ************************/
+
     private Object getProperty(String name, Object not_found) {
         Object o;
         try(Transaction tx = gdb.beginTx()) {
@@ -287,6 +247,28 @@ public class NdRoom {
             node.setProperty(name, value);
             tx.success();
         }
+    }
+
+    private String getDescription() {
+        return (String)getProperty("description", NO_DESCRIPTION);
+    }
+
+    private void addExit(String direction, NdRoom destination) {
+        try(Transaction tx = gdb.beginTx()) {
+            Relationship r = node.createRelationshipTo(destination.getNode(), EdgeType.EXIT);
+            r.setProperty("direction", direction);
+            tx.success();
+            log.info(String.format("Added exit pointing %s leading to room %d", direction, destination.getId()));
+        }
+    }
+
+    private boolean hasExits() {
+        boolean has_exits;
+        try(Transaction tx = gdb.beginTx()) {
+            has_exits = node.hasRelationship(EdgeType.EXIT, Direction.OUTGOING);
+            tx.success();
+        }
+        return has_exits;
     }
 
     private void announceEntrance(NdPlayer player) {

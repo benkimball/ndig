@@ -26,7 +26,7 @@ public class NdRoster {
         log.info(String.format("Created for %d lines", size));
     }
 
-    public NdPlayer createPlayer(ChannelHandlerContext ctx) {
+    public NdPlayer createPlayer(ChannelHandlerContext ctx) throws NdException {
         NdPlayer player = null;
         synchronized (lock) {
             Integer line_number = available_lines.pollFirst();
@@ -36,6 +36,7 @@ public class NdRoster {
                 log.info(String.format("Assigned new player to line number %d", line_number));
             } else {
                 log.info("No available line number for new player");
+                throw new NdException("Server is full");
             }
         }
         return player;

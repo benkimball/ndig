@@ -40,7 +40,7 @@ public class NdPlayer {
         log.info(String.format("%s logged on from %s (%s)", toString(), from, address.toString()));
     }
 
-    public void seen() {
+    public void setLastSeen() {
         last_seen = Instant.now();
     }
 
@@ -65,7 +65,9 @@ public class NdPlayer {
         return from;
     }
 
-    public Integer getLineNumber() { return line_number; }
+    public Integer getLineNumber() {
+        return line_number;
+    }
 
     public ChannelFuture tell(String text) {
         return ctx.writeAndFlush(text + "\n");
@@ -81,28 +83,11 @@ public class NdPlayer {
         return null;
     }
 
-    public synchronized void follow(String direction) {
-        Long old_location_id = location.getId();
-        NdRoom new_location = location.getDestination(direction);
-        if(new_location != null) {
-            Long new_location_id = new_location.getId();
-            log.debug(String.format("%s from location %d leads to location %d",
-                    direction, old_location_id, new_location_id));
-            location.out(this);
-            log.info(String.format("%s moved from location %d to location %d",
-                    toString(), old_location_id, new_location_id));
-            location = new_location;
-            location.in(this);
-        } else {
-            log.debug(String.format("%s from location %d leads to NULL", direction, old_location_id));
-        }
-    }
-
     public synchronized void setLocation(NdRoom room) {
         if(room == null) {
-            log.info(String.format("Removing location of %s", toString()));
+            log.info(String.format("Removing location of %s", this));
         } else {
-            log.info(String.format("Setting location of %s to %d", toString(), room.getId()));
+            log.info(String.format("Setting location of %s to %s", this, room));
         }
         location = room;
     }
@@ -114,11 +99,11 @@ public class NdPlayer {
     public boolean toggleIgnore(NdPlayer other) {
         synchronized(ignores) {
             if(ignores.contains(other)) {
-                log.info(String.format("%s no longer ignoring %s", toString(), other.toString()));
+                log.info(String.format("%s no longer ignoring %s", this, other));
                 ignores.remove(other);
                 return false;
             } else {
-                log.info(String.format("%s now ignoring %s", toString(), other.toString()));
+                log.info(String.format("%s now ignoring %s", this, other));
                 ignores.add(other);
                 return true;
             }
@@ -127,7 +112,11 @@ public class NdPlayer {
 
     public boolean toggleHushed() {
         hushed = !hushed;
-        log.info(String.format("%s %s hushed", toString(), hushed ? "now" : "no longer"));
+        if(hushed) {
+            log.info(String.format("%s now hushed", this));
+        } else {
+            log.info(String.format("%s no longer hushed", this));
+        }
         return hushed;
     }
 

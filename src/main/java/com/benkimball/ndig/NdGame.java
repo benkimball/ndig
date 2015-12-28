@@ -19,15 +19,12 @@ public class NdGame {
 
     public NdGame(int max_connections) {
         this.roster = new NdRoster(max_connections);
-        log.info("Created for "+Integer.toString(max_connections)+" connections");
     }
 
-    public NdPlayer handleLogin(ChannelHandlerContext ctx) {
+    public NdPlayer handleLogin(ChannelHandlerContext ctx) throws NdException {
         NdPlayer player = roster.createPlayer(ctx);
-        if(player != null) {
-            broadcast(String.format("New arrival on line %d.", player.getLineNumber()));
-            allChannels.add(ctx.channel());
-        }
+        broadcast(String.format("New arrival on line %d.", player.getLineNumber()));
+        allChannels.add(ctx.channel());
         return player;
     }
 

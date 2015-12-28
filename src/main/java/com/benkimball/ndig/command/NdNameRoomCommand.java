@@ -1,8 +1,6 @@
 package com.benkimball.ndig.command;
 
-import com.benkimball.ndig.NdGame;
-import com.benkimball.ndig.NdRoom;
-import com.benkimball.ndig.NdPlayer;
+import com.benkimball.ndig.*;
 import net.jcip.annotations.Immutable;
 
 @Immutable
@@ -15,11 +13,11 @@ public class NdNameRoomCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        if(name.equals("Home")) {
-            player.tell("Invalid name.");
-        } else {
-            player.getLocation().setName(name);
-            player.tell("Room renamed.");
+        try {
+            NdResult r = player.getLocation().setName(name);
+            player.tell(r.getMessage());
+        } catch (NdException e) {
+            player.tell(e.getMessage());
         }
         return false;
     }

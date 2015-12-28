@@ -15,12 +15,10 @@ public class NdDigCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        NdRoom new_room = player.getLocation().dig(direction);
-        if(new_room != null) {
-            player.follow(direction);
-        } else {
-            player.tell("You can't dig that way.");
-        }
+        NdRoom location = player.getLocation();
+        NdRoom new_location = location.dig(direction);
+        location.out(player);
+        new_location.in(player);
         return false;
     }
 }

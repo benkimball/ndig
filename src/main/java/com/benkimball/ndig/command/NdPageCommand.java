@@ -4,8 +4,6 @@ import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdPlayer;
 import net.jcip.annotations.Immutable;
 
-import java.util.regex.Matcher;
-
 @Immutable
 public class NdPageCommand implements NdCommand {
     private final int line_number;
