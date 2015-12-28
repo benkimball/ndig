@@ -7,9 +7,27 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
     private static final Log log = LogFactory.getLog("NdCommandHandler");
+    private static StringBuffer bannerText = new StringBuffer();
+    static {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    NdCommandHandler.class.getResourceAsStream("/banner.txt")));
+            String line;
+            while((line = reader.readLine()) != null) {
+                bannerText.append(line);
+                bannerText.append("\n");
+            }
+        } catch(IOException ex) {
+            throw new RuntimeException("Unexpected exception reading banner text", ex);
+        }
+    }
     private final NdGame game = NdServer.game;
     private NdPlayer player;
 
@@ -23,7 +41,8 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
             ctx.writeAndFlush(e.getMessage()+"\n\n").addListener(ChannelFutureListener.CLOSE);
             return;
         }
-        ctx.write("Connected to ndig\n");
+        ctx.write(bannerText.toString());
+
         ctx.write("Your name is " + player.getName() + "\n");
         ctx.write("You have line " + player.getLineNumber() + "\n");
         ctx.write("Help available; enter '.help' or '.?'\n");

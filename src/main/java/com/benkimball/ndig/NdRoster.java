@@ -21,13 +21,13 @@ public class NdRoster {
 
     public NdRoster(int size) {
         available_lines = new ConcurrentSkipListSet<>();
-        for (int ix = 0; ix < size; ix++) available_lines.add(ix);
+        for (int ix = 1; ix < size; ix++) available_lines.add(ix);
         lines = new ConcurrentHashMap<>(size);
         log.info(String.format("Created for %d lines", size));
     }
 
     public NdPlayer createPlayer(ChannelHandlerContext ctx) throws NdException {
-        NdPlayer player = null;
+        NdPlayer player;
         synchronized (lock) {
             Integer line_number = available_lines.pollFirst();
             if(line_number != null) {
