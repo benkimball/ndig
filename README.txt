@@ -1,6 +1,5 @@
 ndig is a haven-type chat server mixed with a MUD.
 
-TODO: Reserve line 0
 TODO: Prohibit concurrent connections from same host?
 
 Future plans:
