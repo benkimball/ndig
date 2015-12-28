@@ -1,3 +1,2 @@
 Manifest-Version: 1.0
 Main-Class: com.benkimball.ndig.NdServer
-Implementation-Version: 1.0fc1
