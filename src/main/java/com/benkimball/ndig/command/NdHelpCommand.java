@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 @Immutable
 public class NdHelpCommand implements NdCommand {
 
-    private static StringBuffer helpText = new StringBuffer();
+    public static StringBuffer helpText = new StringBuffer();
 
     static {
         try {
@@ -29,7 +29,8 @@ public class NdHelpCommand implements NdCommand {
 
     @Override
     public boolean invoke(NdGame game, NdPlayer player) {
-        player.tell(helpText.toString());
+        String marker = "<HELP-COMMANDS.TXT>";
+        player.tell(helpText.toString().replace(marker, NdShortHelpCommand.helpText));
         return false;
     }
 }

@@ -1,5 +1,5 @@
 ndig help, version 1.0
-last updated 23 November 2015
+last updated 31 December 2015
 
 1) Where am I?
 
@@ -10,7 +10,8 @@ http://www.rootaction.net/~jillian/haven/haven/text/havenfaq.txt.
 
 2) What can I do?
 
-You can chat with other online users.
+You can chat with other online users, as a whole or in smaller groups, and you
+can explore the world other users have built, and build new areas of your own.
 
 3) Okay, how do I chat?
 
@@ -20,7 +21,7 @@ world!" it will appear to other users (and yourself) like this:
 
   (3, guest53613) hello, world!
 
-4) "guest53613"? That's gross.
+4) Is "guest53613" my name? That's gross.
 
 Yes, the default usernames are designed to make you want to change them. To
 change your name, you'll send a _command_. There are several available
@@ -35,7 +36,8 @@ Now, if you send "I am magnificent!", you and others in your room will see:
 
   (3, Gonzo the Magnificent) I am magnificent!
 
-You cannot use the same name as another logged-in user.
+You cannot use the same name as another logged-in user, and names are
+case-insensitive.
 
 5) What's the "3" for?
 
@@ -54,37 +56,33 @@ info).
 
 6) How can I tell what room I'm in?
 
-Well, it's pretty easy, because right now there is only one room, called Home.
-Therefore you are in it.
+When you first connect, you are added to the Home room. Unless you've moved,
+you're there now. But in any case, the _look_ command (.look or just .l) will
+show you the name and description of the room you're in, plus a list of visible
+exits from that room.
 
-7) Got it. What other commands are there?
+7) Exits?
+
+Yep. Each exit has a name, which is usually (but not always) a cardinal
+direction. To move to another room, use the _move_ command, which is of the
+form >direction (for example, >north to follow the "north" exit from a room).
+
+8) Got it. What other commands are there?
 
 Here's the list. Note that all commands may be abbreviated, so long as the
 abbreviation is unambiguous. So ".hu" will work for ".hush", but ".h" won't work
 because I don't know if you want ".hush" or ".help".
 
-  Chat Commands
+<HELP-COMMANDS.TXT>
 
-  .gag <n>          Suppress all messages from line number n.
-  .yell <msg>       Send <msg> to all users on the system who are not hushed,
-                    regardless of the room they're in.
-  .hush             Suppress yells. If you are hushed, you also cannot yell.
-  .page <n> <msg>   Send <msg> to the user on line number n.
-  :<message>        Send a special "emote" chat message. Also known as posing.
-                    For example ":smiles" will appear as "(3) Alex smiles"
-
-  Info Commands
-
-  .look             Show the name and description of the room you're in.
-  .who              Show a list of all users on the system.
-  .whois <n>        Show detailed information about the user on line number n.
-  .name <newname>   Change your name to <newname>.
-  .help             Show this help.
-  .?                Show a description of available commands.
-
-8) Sometimes I get a message while I'm typing and the text breaks up across
+9) Sometimes I get a message while I'm typing and the text breaks up across
 lines in funny ways.
 
 You're probably using telnet to connect. You might find that you prefer
 dedicated client software like Ken Keys' TinyFugue, which keeps the input and
 output buffers separate. See http://en.wikipedia.org/wiki/TinyFugue.
+
+10) What happened, I think I missed some of the help you just sent me?
+
+This can happen if you're using telnet (try scrolling up) or if you haven't
+enabled paging in TinyFugue (try "/more on").

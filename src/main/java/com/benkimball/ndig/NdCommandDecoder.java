@@ -18,7 +18,9 @@ public class NdCommandDecoder extends MessageToMessageDecoder<String> {
     private static final Pattern DIG       = Pattern.compile("^@d(i|ig)? (?<text>.+)$");
     private static final Pattern NAMEROOM  = Pattern.compile("^@n(a|am|ame)? (?<text>.+)$");
     private static final Pattern DESCROOM  = Pattern.compile("^@d(e|es|esc|escr|escri|escrib|escribe)? (?<text>.+)$");
-    private static final Pattern BROADCAST = Pattern.compile("^@b(r|ro|roa|road|roadc|roadca|roadcas|roadcast)? (?<text>.+)$");
+
+    // !commands
+    private static final Pattern BROADCAST = Pattern.compile("^!b(r|ro|roa|road|roadc|roadca|roadcas|roadcast)? (?<text>.+)$");
 
     // >commands
     private static final Pattern MOVE      = Pattern.compile("^> ?(?<text>.+)$");

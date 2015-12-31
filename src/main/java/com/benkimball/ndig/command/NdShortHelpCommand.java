@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 @Immutable
 public class NdShortHelpCommand implements NdCommand {
 
-    private static StringBuffer helpText = new StringBuffer();
+    public static StringBuffer helpText = new StringBuffer();
 
     static {
         try {
