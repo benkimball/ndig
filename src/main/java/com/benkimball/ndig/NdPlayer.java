@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringJoiner;
 
 public class NdPlayer {
 
@@ -62,7 +63,12 @@ public class NdPlayer {
     }
 
     public String getFrom() {
-        return from;
+        int last_index = from.length();
+        if(last_index <= 30) return from;
+        StringJoiner sj = new StringJoiner("...");
+        sj.add(from.substring(0, 15)); // long enough for IP addr
+        sj.add(from.substring(last_index-12, last_index)); // at least some of the domain
+        return sj.toString();
     }
 
     public Integer getLineNumber() {

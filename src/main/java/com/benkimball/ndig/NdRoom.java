@@ -161,13 +161,15 @@ public class NdRoom {
     }
 
     public String getAppearance() {
-        StringJoiner sj = new StringJoiner("\n", "\n", "");
+        StringJoiner sj = new StringJoiner("\n", "\n\n", "");
         sj.add(getName());
         sj.add(getDescription());
         if(hasExits()) {
             StringJoiner ej = new StringJoiner(", ", "Visible exits: ", ".");
             getExitNames().forEach(ej::add);
             sj.add(ej.toString());
+        } else {
+            sj.add("No visible exits.");
         }
         return sj.toString();
     }

@@ -45,7 +45,7 @@ public class NdCommandHandler extends SimpleChannelInboundHandler<NdCommand> {
 
         ctx.write("Your name is " + player.getName() + "\n");
         ctx.write("You have line " + player.getLineNumber() + "\n");
-        ctx.write("Help available; enter '.help' or '.?'\n");
+        ctx.write("Help available; enter '.help' or '.?'");
         starting_location.in(player);
         ctx.flush();
     }
