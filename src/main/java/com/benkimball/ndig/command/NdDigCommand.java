@@ -1,5 +1,6 @@
 package com.benkimball.ndig.command;
 
+import com.benkimball.ndig.NdDirection;
 import com.benkimball.ndig.NdGame;
 import com.benkimball.ndig.NdRoom;
 import com.benkimball.ndig.NdPlayer;
@@ -10,7 +11,7 @@ public class NdDigCommand implements NdCommand {
     private final String direction;
 
     public NdDigCommand(String direction) {
-        this.direction = direction.toLowerCase();
+        this.direction = NdDirection.normalize(direction);
     }
 
     @Override

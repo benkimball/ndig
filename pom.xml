@@ -6,7 +6,7 @@
 
     <groupId>com.benkimball</groupId>
     <artifactId>ndig</artifactId>
-    <version>1.0fc2</version>
+    <version>1.0fc3</version>
 
     <dependencies>
         <dependency>

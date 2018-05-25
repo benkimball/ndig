@@ -1,14 +1,9 @@
 package com.benkimball.ndig;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.Arrays;
 import java.util.List;
 
 public class NdDirection {
-
-    private static final Log log = LogFactory.getLog("NdDirection");
 
     private static final List<String> pairs = Arrays.asList(
             "north", "south",
@@ -36,5 +31,42 @@ public class NdDirection {
             reversed = pairs.get(j);
         }
         return reversed;
+    }
+
+    public static String normalize(String direction) {
+        String match = direction.toLowerCase();
+        switch (match) {
+            case "n":
+                match = "north";
+                break;
+            case "s":
+                match = "south";
+                break;
+            case "e":
+                match = "east";
+                break;
+            case "w":
+                match = "west";
+                break;
+            case "ne":
+                match = "northeast";
+                break;
+            case "nw":
+                match = "northwest";
+                break;
+            case "se":
+                match = "southeast";
+                break;
+            case "sw":
+                match = "southwest";
+                break;
+            case "u":
+                match = "up";
+                break;
+            case "d":
+                match = "down";
+                break;
+        }
+        return match;
     }
 }
