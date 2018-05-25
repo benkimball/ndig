@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.benkimball</groupId>
   <artifactId>ndig</artifactId>
-  <version>1.0fc2</version>
+  <version>1.0fc3</version>
   <build>
     <plugins>
       <plugin>
